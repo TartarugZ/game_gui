@@ -2,6 +2,8 @@ import pygame
 import pygame_gui
 from pygame_gui.core import ObjectID
 
+from game.config import *
+
 import army_ui
 import journal_ui
 import storage_ui
@@ -11,7 +13,7 @@ import workers_ui
 
 
 class Town:
-    def __init__(self, manager, background):
+    def __init__(self, manager, background, g):
         self.manager = manager
         self.background = background
         self.population = []
@@ -19,6 +21,7 @@ class Town:
         self.industries = []
         self.armies = []
         self.happiness_b = []
+        self.game = g
 
         self.houses = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((700, 0), (100, 50)),
                                                    text='Houses',
@@ -178,7 +181,14 @@ class Town:
             if event.type == pygame_gui.UI_BUTTON_PRESSED:
                 if event.ui_element == self.house:
                     self.enable_all()
-                    house.disable()
+                    self.house.disable()
+                    print(1)
+                    self.game.show_place(BUILDINGS[HOUSE])
+                    if event.type == pygame.MOUSEBUTTONDOWN:
+                        if event.button == 1:
+                            x = event.pos[0] // TILESIZE
+                            y = event.pos[1] // TILESIZE
+                            self.game.build_building(x, y, BUILDINGS[HOUSE])
                 elif event.ui_element == self.gold_mine:
                     self.enable_all()
                     gold_mine.disable()

@@ -11,6 +11,7 @@ import storage_ui
 import settings_ui
 import world_ui
 import workers_ui
+import game.game
 
 
 class Start:
@@ -26,7 +27,9 @@ class Start:
         icon = pygame.image.load('img/f5.png')
         pygame.display.set_icon(icon)
 
-        self.town = town_ui.Town(self.manager, self.background)
+        self.game = game.game.Game(self.background)
+
+        self.town = town_ui.Town(self.manager, self.background, self.game)
         self.army = army_ui.Army(self.manager, self.background)
         self.journal = journal_ui.Journal(self.manager, self.background)
         self.settings = settings_ui.Settings(self.manager, self.background, False)
@@ -43,6 +46,7 @@ class Start:
         self.navigation.show_all_navigation()
         self.town.show_side_buttons()
         self.navigation.town.disable()
+        self.game.new()
         while self.is_running:
             self.navigation.some.disable()
             self.journal.start()
@@ -53,6 +57,7 @@ class Start:
             self.workers.start()
             self.settings.start()
             time_delta = self.navigation.clock.tick(60) / 1000.0
+            self.game.update()
             if not self.navigation.journal.is_enabled:
                 self.hide_all()
                 self.journal.show_all_journal()
@@ -65,6 +70,7 @@ class Start:
                 self.hide_all()
                 self.town.show_side_buttons()
                 self.town.start()
+                self.game.draw()
             elif not self.navigation.world.is_enabled:
                 self.hide_all()
                 self.world.show_all_world()
