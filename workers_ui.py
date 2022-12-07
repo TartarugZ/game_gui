@@ -383,10 +383,6 @@ class Workers:
             self.hunting_plus.disable()
             self.shipyard_plus.disable()
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            self.manager.process_events(event)
 
     def count_workers(self):
         return (self.field + self.iron_mine + self.gold_mine + self.stone_mine

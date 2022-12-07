@@ -1,4 +1,7 @@
 import shelve
+
+import pygame
+
 from game.config import *
 
 MAP_INDEX = 'index'
@@ -10,6 +13,15 @@ RES = 'res'
 class Retention:
     def __init__(self):
         self.file = shelve.open('save/data')
+        self.last_tick = pygame.time.get_ticks()
+        self.cooldown = 300000
+
+    def check_cooldown(self):
+        now = pygame.time.get_ticks()
+        if now - self.last_tick >= self.cooldown:
+            self.last_tick = now
+            return True
+        return False
 
     def save(self, game):
         for i in game.resources:

@@ -262,14 +262,8 @@ class Storage:
                                      f'Population {self.resources[PEOPLE][COUNT]} / {self.resources[PEOPLE][MAX]}',
                                      20, 700, 10)
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            self.manager.process_events(event)
-
         for res in self.check_resource:
             self.check_resource[res] = self.resources[res][COUNT]
-        pygame_widgets.update(pygame.event.get())
 
     def hide_all_storage(self):
         self.background.fill(pygame.Color(43, 43, 43))

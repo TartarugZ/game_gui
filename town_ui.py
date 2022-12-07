@@ -135,38 +135,32 @@ class Town:
                                                     object_id=ObjectID(class_id=None, object_id='#details'))
         self.hide_all()
 
-
     def start(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            self.manager.process_events(event)
-
-        if self.houses.pressed:
+        if self.houses.pressed or not self.houses.is_enabled:
             self.hide_all()
             self.enable_side_buttons()
             self.houses.disable()
             for building in self.population:
                 building.show()
-        elif self.material.pressed or not self.material.is_enabled:
+        if self.material.pressed or not self.material.is_enabled:
             self.hide_all()
             self.enable_side_buttons()
             self.material.disable()
             for building in self.materials:
                 building.show()
-        elif self.industry.pressed or not self.industry.is_enabled:
+        if self.industry.pressed or not self.industry.is_enabled:
             self.hide_all()
             self.enable_side_buttons()
             self.industry.disable()
             for building in self.industries:
                 building.show()
-        elif self.army.pressed or not self.army.is_enabled:
+        if self.army.pressed or not self.army.is_enabled:
             self.hide_all()
             self.enable_side_buttons()
             self.army.disable()
             for building in self.armies:
                 building.show()
-        elif self.happiness.pressed or not self.happiness.is_enabled:
+        if self.happiness.pressed or not self.happiness.is_enabled:
             self.hide_all()
             self.enable_side_buttons()
             self.happiness.disable()

@@ -2,6 +2,7 @@ import datetime
 
 import pygame
 import pygame_gui
+import pygame_widgets
 
 import navigation_bar
 import menu_ui
@@ -45,7 +46,6 @@ class Start:
 
         self.k = 0
 
-
     def start(self):
         menu = menu_ui.Menu(self.manager, self.background, self.window_surface)
         menu.hide_all_menu()
@@ -54,7 +54,11 @@ class Start:
         self.navigation.town.disable()
         self.game.new()
         while self.is_running:
+            if self.game.save_data.check_cooldown():
+                self.game.save_data.save(self.game)
+
             time_delta = self.navigation.clock.tick(FPS) / 1000.0
+            self.navigation.some.disable()
             self.game.update()
             if not self.navigation.journal.is_enabled:
                 self.hide_all()
@@ -65,7 +69,7 @@ class Start:
                 self.army.show_all_army()
                 self.army.start()
             elif not self.navigation.town.is_enabled:
-                # self.hide_all()
+                self.hide_all()
                 self.town.show_side_buttons()
                 self.town.start()
                 self.game.draw()
@@ -111,7 +115,6 @@ class Start:
             elif self.navigation.some.pressed:
                 pass
             for event in pygame.event.get():
-                print(event)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1 and not self.town.house.is_enabled:
                         x = event.pos[0] // TILESIZE
@@ -187,11 +190,12 @@ class Start:
                         self.game.build_building(x, y, BUILDINGS[GOLD_MELT])
                 if event.type == pygame.QUIT:
                     self.is_running = False
+                    self.game.save_data.save(self.game)
                     exit()
                 # self.k += 1
                 # print(self.k)
                 self.manager.process_events(event)
-
+                pygame_widgets.update(event)
             self.manager.update(time_delta)
             self.window_surface.blit(self.background, (0, 0))
             self.manager.draw_ui(self.window_surface)

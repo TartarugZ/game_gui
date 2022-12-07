@@ -17,10 +17,6 @@ class Journal:
     def start(self):
         with open('story.txt', encoding='utf-8', mode='r') as f:
             self.story_tb.set_text(f.read())
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            self.manager.process_events(event)
                
     def hide_all_journal(self):
         self.story_tb.hide()

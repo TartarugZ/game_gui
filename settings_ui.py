@@ -11,7 +11,7 @@ class Settings:
         self.manager = manager
         self.background = background
         self.text_needed = True
-        
+
         self.back_btn = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((0, 0), (200, 50)),
                                                      text='Back',
                                                      manager=self.manager)
@@ -27,12 +27,9 @@ class Settings:
         if self.text_needed:
             navigation_bar.draw_text(self.background, "Made by SS BBSO-01-20", 60, 400, 150)
 
-        for event in pygame.event.get():
-            self.manager.process_events(event)
-            if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.donate:
-                    webbrowser.open("https://vk.com/seregasil", new=2)
-                    webbrowser.open("https://vk.com/tartarug", new=2)
+        if self.donate.pressed:
+            webbrowser.open("https://vk.com/seregasil", new=2)
+            webbrowser.open("https://vk.com/tartarug", new=2)
 
     def hide_all_settings(self):
         self.background.fill(pygame.Color(43, 43, 43))

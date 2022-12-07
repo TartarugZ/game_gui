@@ -12,10 +12,6 @@ class World:
     def start(self):
         if self.text_nedeed:
             navigation_bar.draw_text(self.background, "World Map", 30, 400, 20)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            self.manager.process_events(event)
                 
     def hide_all_world(self):
         self.background.fill(pygame.Color(43, 43, 43))
