@@ -1,3 +1,5 @@
+import datetime
+
 import pygame
 import pygame_gui
 
@@ -34,12 +36,15 @@ class Start:
         self.army = army_ui.Army(self.manager, self.background)
         self.journal = journal_ui.Journal(self.manager, self.background)
         self.settings = settings_ui.Settings(self.manager, self.background, False)
-        self.storage = storage_ui.Storage(self.manager, self.background)
+        self.storage = storage_ui.Storage(self.manager, self.background, self.game)
         self.workers = workers_ui.Workers(self.manager, self.background)
         self.world = world_ui.World(self.manager, self.background)
         self.navigation = navigation_bar.NavigationBar(self.manager)
         self.navigation.hide_all_navigation()
         self.hide_all()
+
+        self.k = 0
+
 
     def start(self):
         menu = menu_ui.Menu(self.manager, self.background, self.window_surface)
@@ -49,16 +54,7 @@ class Start:
         self.navigation.town.disable()
         self.game.new()
         while self.is_running:
-
-            self.navigation.some.disable()
-            self.journal.start()
-            self.army.start()
-            self.town.start()
-            self.world.start()
-            self.storage.start()
-            self.workers.start()
-            self.settings.start()
-            time_delta = self.navigation.clock.tick(60) / 1000.0
+            time_delta = self.navigation.clock.tick(FPS) / 1000.0
             self.game.update()
             if not self.navigation.journal.is_enabled:
                 self.hide_all()
@@ -69,7 +65,7 @@ class Start:
                 self.army.show_all_army()
                 self.army.start()
             elif not self.navigation.town.is_enabled:
-                self.hide_all()
+                # self.hide_all()
                 self.town.show_side_buttons()
                 self.town.start()
                 self.game.draw()
@@ -94,7 +90,7 @@ class Start:
             if self.navigation.town.pressed:
                 self.navigation.enable_all_navigation()
                 self.navigation.town.disable()
-            if self.navigation.journal.pressed:
+            elif self.navigation.journal.pressed:
                 self.navigation.enable_all_navigation()
                 self.navigation.journal.disable()
             elif self.navigation.storage.pressed:
@@ -115,6 +111,7 @@ class Start:
             elif self.navigation.some.pressed:
                 pass
             for event in pygame.event.get():
+                print(event)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1 and not self.town.house.is_enabled:
                         x = event.pos[0] // TILESIZE
@@ -191,6 +188,8 @@ class Start:
                 if event.type == pygame.QUIT:
                     self.is_running = False
                     exit()
+                # self.k += 1
+                # print(self.k)
                 self.manager.process_events(event)
 
             self.manager.update(time_delta)

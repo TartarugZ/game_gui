@@ -36,7 +36,7 @@ RESOURCES = {
     },
     GOLD_ORE: {
         COUNT: 100,
-        MAX: 100000
+        MAX: 100
     },
     STONE: {
         COUNT: 10000,

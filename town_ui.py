@@ -135,12 +135,14 @@ class Town:
                                                     object_id=ObjectID(class_id=None, object_id='#details'))
         self.hide_all()
 
+
     def start(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
             self.manager.process_events(event)
-        if self.houses.pressed or not self.houses.is_enabled:
+
+        if self.houses.pressed:
             self.hide_all()
             self.enable_side_buttons()
             self.houses.disable()
@@ -250,6 +252,7 @@ class Town:
             self.game.delete_places()
         elif self.details.pressed:
             pass  # To game code
+
 
     def hide_all_town(self):
         self.hide_all()
