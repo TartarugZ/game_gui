@@ -1,7 +1,6 @@
 import pygame
 import pygame_gui
 import navigation_bar
-import town_ui
 import settings_ui
 
 

@@ -1,15 +1,6 @@
-import time
-
 import pygame
-import pygame_gui
 from pygame_widgets.progressbar import ProgressBar
 import navigation_bar
-import army_ui
-import journal_ui
-import settings_ui
-import world_ui
-import workers_ui
-import town_ui
 import pygame_widgets
 
 
@@ -230,37 +221,37 @@ class Storage:
         self.background.fill(pygame.Color(43, 43, 43))
         if self.text_needed:
             navigation_bar.draw_text(self.background, f'Wood {self.wood} / {self.storage_max}',
-                                         15, 55, 115)
+                                     15, 55, 115)
             navigation_bar.draw_text(self.background, f'Gold ore {self.gold} / {self.storage_max}',
-                                         15, 55, 165)
+                                     15, 55, 165)
             navigation_bar.draw_text(self.background, f'Stone {self.stone} / {self.storage_max}',
-                                         15, 55, 215)
+                                     15, 55, 215)
             navigation_bar.draw_text(self.background, f'Iron ore {self.iron} / {self.storage_max}',
-                                         15, 55, 265)
+                                     15, 55, 265)
             navigation_bar.draw_text(self.background, f'Fish {self.fish} / {self.storage_max}',
-                                         15, 55, 315)
+                                     15, 55, 315)
             navigation_bar.draw_text(self.background, f'Wheat {self.wheat} / {self.storage_max}',
-                                         15, 55, 365)
+                                     15, 55, 365)
             navigation_bar.draw_text(self.background, f'Flour {self.flour} / {self.storage_max}',
-                                         15, 55, 415)
+                                     15, 55, 415)
             navigation_bar.draw_text(self.background, f'Meat {self.meat} / {self.storage_max}',
-                                         15, 55, 465)
+                                     15, 55, 465)
             navigation_bar.draw_text(self.background, f'Skin {self.skin} / {self.storage_max}',
-                                         15, 300, 115)
+                                     15, 300, 115)
             navigation_bar.draw_text(self.background, f'Armor {self.armor} / {self.storage_max}',
-                                         15, 300, 165)
+                                     15, 300, 165)
             navigation_bar.draw_text(self.background, f'Weapon {self.weapon} / {self.storage_max}',
-                                         15, 300, 215)
+                                     15, 300, 215)
             navigation_bar.draw_text(self.background, f'Clothes {self.clothes} / {self.storage_max}',
-                                         15, 300, 265)
+                                     15, 300, 265)
             navigation_bar.draw_text(self.background, f'Bread {self.bread} / {self.storage_max}',
-                                         15, 300, 315)
+                                     15, 300, 315)
             navigation_bar.draw_text(self.background, f'Gold {self.gold} / {self.storage_max}',
-                                         15, 300, 365)
+                                     15, 300, 365)
             navigation_bar.draw_text(self.background, f'Iron {self.iron} / {self.storage_max}',
-                                         15, 300, 415)
+                                     15, 300, 415)
             navigation_bar.draw_text(self.background, f'Population {self.population}',
-                                         20, 700, 10)
+                                     20, 700, 10)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -296,4 +287,3 @@ class Storage:
         self.text_needed = True
         for element in self.all_storage:
             element.show()
-            

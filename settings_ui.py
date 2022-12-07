@@ -2,13 +2,6 @@ import pygame
 import pygame_gui
 from pygame_gui.core import ObjectID
 import navigation_bar
-import menu_ui
-import army_ui
-import journal_ui
-import storage_ui
-import world_ui
-import workers_ui
-import town_ui
 import webbrowser
 
 

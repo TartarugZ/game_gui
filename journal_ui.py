@@ -1,11 +1,5 @@
 import pygame
 import pygame_gui
-import town_ui
-import army_ui
-import storage_ui
-import settings_ui
-import world_ui
-import workers_ui
 
 
 def write_story(text):

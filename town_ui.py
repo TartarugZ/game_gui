@@ -1,15 +1,7 @@
 import pygame
 import pygame_gui
 from pygame_gui.core import ObjectID
-
 from game.config import *
-
-import army_ui
-import journal_ui
-import storage_ui
-import settings_ui
-import world_ui
-import workers_ui
 
 
 class Town:
@@ -144,6 +136,10 @@ class Town:
         self.hide_all()
 
     def start(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                exit()
+            self.manager.process_events(event)
         if self.houses.pressed or not self.houses.is_enabled:
             self.hide_all()
             self.enable_side_buttons()
@@ -174,79 +170,87 @@ class Town:
             self.happiness.disable()
             for building in self.happiness_b:
                 building.show()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            self.manager.process_events(event)
-            if event.type == pygame_gui.UI_BUTTON_PRESSED:
-                if event.ui_element == self.house:
-                    self.enable_all()
-                    self.house.disable()
-                    print(1)
-                    self.game.show_place(BUILDINGS[HOUSE])
-                    if event.type == pygame.MOUSEBUTTONDOWN:
-                        if event.button == 1:
-                            x = event.pos[0] // TILESIZE
-                            y = event.pos[1] // TILESIZE
-                            self.game.build_building(x, y, BUILDINGS[HOUSE])
-                elif event.ui_element == self.gold_mine:
-                    self.enable_all()
-                    gold_mine.disable()
-                elif event.ui_element == self.stone_mine:
-                    self.enable_all()
-                    stone_mine.disable()
-                elif event.ui_element == self.iron_mine:
-                    self.enable_all()
-                    iron_mine.disable()
-                elif event.ui_element == self.sawmill:
-                    self.enable_all()
-                    sawmill.disable()
-                elif event.ui_element == self.storage:
-                    self.enable_all()
-                    storage.disable()
-                elif event.ui_element == self.fishing:
-                    self.enable_all()
-                    fishing.disable()
-                elif event.ui_element == self.wheat_field:
-                    self.enable_all()
-                    wheat_field.disable()
-                elif event.ui_element == self.mill:
-                    self.enable_all()
-                    mill.disable()
-                elif event.ui_element == self.bakery:
-                    self.enable_all()
-                    bakery.disable()
-                elif event.ui_element == self.hunting:
-                    self.enable_all()
-                    hunting.disable()
-                elif event.ui_element == self.blacksmith:
-                    self.enable_all()
-                    blacksmith.disable()
-                elif event.ui_element == self.gunsmith:
-                    self.enable_all()
-                    gunsmith.disable()
-                elif event.ui_element == self.barracks:
-                    self.enable_all()
-                    barracks.disable()
-                elif event.ui_element == self.shipyard:
-                    self.enable_all()
-                    shipyard.disable()
-                elif event.ui_element == self.tailor:
-                    self.enable_all()
-                    tailor.disable()
-                elif event.ui_element == self.iron_melt:
-                    self.enable_all()
-                    iron_melt.disable()
-                elif event.ui_element == self.gold_melt:
-                    self.enable_all()
-                    gold_melt.disable()
-                elif event.ui_element == self.stop:
-                    self.enable_side_buttons()
-                    self.enable_all()
-                    self.hide_all()
-                elif event.ui_element == self.details:
-                    pass  # To game code
-    
+
+        if self.house.pressed:
+            self.enable_all()
+            self.house.disable()
+            self.game.show_place(BUILDINGS[HOUSE])
+        elif self.gold_mine.pressed:
+            self.enable_all()
+            self.gold_mine.disable()
+            self.game.show_place(BUILDINGS[GOLD_MINE])
+        elif self.stone_mine.pressed:
+            self.enable_all()
+            self.stone_mine.disable()
+            self.game.show_place(BUILDINGS[STONE_MINE])
+        elif self.iron_mine.pressed:
+            self.enable_all()
+            self.iron_mine.disable()
+            self.game.show_place(BUILDINGS[IRON_MINE])
+        elif self.sawmill.pressed:
+            self.enable_all()
+            self.sawmill.disable()
+            self.game.show_place(BUILDINGS[SAWMILL])
+        elif self.storage.pressed:
+            self.enable_all()
+            self.storage.disable()
+            self.game.show_place(BUILDINGS[STORAGE])
+        elif self.fishing.pressed:
+            self.enable_all()
+            self.fishing.disable()
+            self.game.show_place(BUILDINGS[FISHERMAN])
+        elif self.wheat_field.pressed:
+            self.enable_all()
+            self.wheat_field.disable()
+            self.game.show_place(BUILDINGS[WHEAT_FIELD])
+        elif self.mill.pressed:
+            self.enable_all()
+            self.mill.disable()
+            self.game.show_place(BUILDINGS[MILL])
+        elif self.bakery.pressed:
+            self.enable_all()
+            self.bakery.disable()
+            self.game.show_place(BUILDINGS[BAKERY])
+        elif self.hunting.pressed:
+            self.enable_all()
+            self.hunting.disable()
+            self.game.show_place(BUILDINGS[HUNTER])
+        elif self.blacksmith.pressed:
+            self.enable_all()
+            self.blacksmith.disable()
+            self.game.show_place(BUILDINGS[BLACKSMITH])
+        elif self.gunsmith.pressed:
+            self.enable_all()
+            self.gunsmith.disable()
+            self.game.show_place(BUILDINGS[GUNSMITH])
+        elif self.barracks.pressed:
+            self.enable_all()
+            self.barracks.disable()
+            self.game.show_place(BUILDINGS[BARRACKS])
+        elif self.shipyard.pressed:
+            self.enable_all()
+            self.shipyard.disable()
+            self.game.show_place(BUILDINGS[SHIPYARD])
+        elif self.tailor.pressed:
+            self.enable_all()
+            self.tailor.disable()
+            self.game.show_place(BUILDINGS[TAILOR])
+        elif self.iron_melt.pressed:
+            self.enable_all()
+            self.iron_melt.disable()
+            self.game.show_place(BUILDINGS[IRON_MELT])
+        elif self.gold_melt.pressed:
+            self.enable_all()
+            self.gold_melt.disable()
+            self.game.show_place(BUILDINGS[GOLD_MELT])
+        elif self.stop.pressed:
+            self.enable_side_buttons()
+            self.enable_all()
+            self.hide_all()
+            self.game.delete_places()
+        elif self.details.pressed:
+            pass  # To game code
+
     def hide_all_town(self):
         self.hide_all()
         self.houses.hide()
@@ -256,7 +260,7 @@ class Town:
         self.happiness.hide()
         self.details.hide()
         self.stop.hide()
-    
+
     def show_side_buttons(self):
         self.houses.show()
         self.material.show()
@@ -265,7 +269,7 @@ class Town:
         self.happiness.show()
         self.details.show()
         self.stop.show()
-                
+
     def hide_all(self):
         for building in self.population:
             building.hide()
@@ -279,6 +283,7 @@ class Town:
             building.hide()
 
     def enable_all(self):
+        self.game.delete_places()
         for building in self.population:
             building.enable()
         for building in self.materials:

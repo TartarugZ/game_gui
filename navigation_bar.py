@@ -68,5 +68,4 @@ class NavigationBar:
         self.army.enable()
         self.world.enable()
         self.settings.enable()
-        self.some.enable()
         

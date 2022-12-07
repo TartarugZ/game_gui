@@ -1,12 +1,6 @@
 import pygame
 import navigation_bar
 import pygame_gui
-import journal_ui
-import storage_ui
-import settings_ui
-import world_ui
-import workers_ui
-import town_ui
 
 
 class Army:

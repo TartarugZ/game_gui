@@ -12,6 +12,7 @@ import settings_ui
 import world_ui
 import workers_ui
 import game.game
+from game.config import *
 
 
 class Start:
@@ -48,6 +49,7 @@ class Start:
         self.navigation.town.disable()
         self.game.new()
         while self.is_running:
+
             self.navigation.some.disable()
             self.journal.start()
             self.army.start()
@@ -88,9 +90,7 @@ class Start:
                 self.settings.show_all_settings()
                 self.settings.start()
             elif not self.navigation.some.is_enabled:
-                self.hide_all()
-                self.some.show_all_some()
-                self.some.start()
+                pass
             if self.navigation.town.pressed:
                 self.navigation.enable_all_navigation()
                 self.navigation.town.disable()
@@ -115,6 +115,79 @@ class Start:
             elif self.navigation.some.pressed:
                 pass
             for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if event.button == 1 and not self.town.house.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[HOUSE])
+                    elif event.button == 1 and not self.town.gold_mine.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[GOLD_MINE])
+                    elif event.button == 1 and not self.town.stone_mine.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[STONE_MINE])
+                    elif event.button == 1 and not self.town.iron_mine.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[IRON_MINE])
+                    elif event.button == 1 and not self.town.sawmill.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[SAWMILL])
+                    elif event.button == 1 and not self.town.storage.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[STORAGE])
+                    elif event.button == 1 and not self.town.fishing.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[FISHERMAN])
+                    elif event.button == 1 and not self.town.wheat_field.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[WHEAT_FIELD])
+                    elif event.button == 1 and not self.town.mill.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[MILL])
+                    elif event.button == 1 and not self.town.bakery.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[BAKERY])
+                    elif event.button == 1 and not self.town.hunting.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[HUNTER])
+                    elif event.button == 1 and not self.town.blacksmith.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[BLACKSMITH])
+                    elif event.button == 1 and not self.town.gunsmith.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[GUNSMITH])
+                    elif event.button == 1 and not self.town.barracks.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[BARRACKS])
+                    elif event.button == 1 and not self.town.shipyard.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[SHIPYARD])
+                    elif event.button == 1 and not self.town.tailor.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[TAILOR])
+                    elif event.button == 1 and not self.town.iron_melt.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[IRON_MELT])
+                    elif event.button == 1 and not self.town.gold_melt.is_enabled:
+                        x = event.pos[0] // TILESIZE
+                        y = event.pos[1] // TILESIZE
+                        self.game.build_building(x, y, BUILDINGS[GOLD_MELT])
                 if event.type == pygame.QUIT:
                     self.is_running = False
                     exit()

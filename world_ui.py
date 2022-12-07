@@ -1,19 +1,17 @@
 import pygame
 import pygame_gui
-import army_ui
-import journal_ui
-import storage_ui
-import settings_ui
-import town_ui
-import workers_ui
+import navigation_bar
 
 
 class World:
     def __init__(self, manager, background):
         self.manager = manager
         self.background = background
+        self.text_nedeed = True
 
     def start(self):
+        if self.text_nedeed:
+            navigation_bar.draw_text(self.background, "World Map", 30, 400, 20)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
