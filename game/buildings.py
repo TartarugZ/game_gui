@@ -33,7 +33,7 @@ class DynamicBuilding(Building):
         self.remove_extra_sprite(building_info)
 
         self.resource_use = building_info[RESOURCES_USE]
-        self.workers = 1
+        self.workers = 0
         self.max_workers = building_info[MAX_WORKERS]
 
         self.last_tick = pygame.time.get_ticks()
