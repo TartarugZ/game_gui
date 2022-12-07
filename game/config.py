@@ -122,7 +122,7 @@ BUILDINGS = {
         TYPE: DYNAMIC,
         NAME: GOLD_MINE,
         RESOURCES_CREATE: {
-            GOLD_ORE: 20,
+            GOLD_ORE: 2,
         },
         RESOURCES_USE: {
             STONE: 47

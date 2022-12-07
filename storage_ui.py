@@ -25,7 +25,7 @@ class Storage:
         for r in self.resources:
             self.check_resource[r] = 0
 
-        self.all_storage = []
+        self.all_storage = {}
         self.text_needed = True
 
         self.wood_bar = ProgressBar(self.background,
@@ -73,21 +73,21 @@ class Storage:
         self.iron_bar = ProgressBar(self.background,
                                     380, 400, 100, 40,
                                     lambda: self.resources[IRON][COUNT] / self.resources[IRON][MAX])
-        self.all_storage.append(self.iron_bar)
-        self.all_storage.append(self.gold_bar)
-        self.all_storage.append(self.bread_bar)
-        self.all_storage.append(self.clothes_bar)
-        self.all_storage.append(self.weapon_bar)
-        self.all_storage.append(self.armor_bar)
-        self.all_storage.append(self.skin_bar)
+        self.all_storage[IRON] = self.iron_bar
+        self.all_storage[GOLD] = self.gold_bar
+        self.all_storage[BREAD] = self.bread_bar
+        self.all_storage[CLOTHES] = self.clothes_bar
+        self.all_storage[WEAPON] = self.weapon_bar
+        self.all_storage[ARMOR] = self.armor_bar
+        self.all_storage[SKIN] = self.skin_bar
         # self.all_storage.append(self.meat_bar)
-        self.all_storage.append(self.flour_bar)
-        self.all_storage.append(self.wheat_bar)
-        self.all_storage.append(self.fish_bar)
-        self.all_storage.append(self.iron_ore_bar)
-        self.all_storage.append(self.gold_ore_bar)
-        self.all_storage.append(self.stone_bar)
-        self.all_storage.append(self.wood_bar)
+        self.all_storage[FLOUR] = self.flour_bar
+        self.all_storage[WHEAT] = self.wheat_bar
+        self.all_storage[FISH] = self.fish_bar
+        self.all_storage[IRON_ORE] = self.iron_ore_bar
+        self.all_storage[GOLD_ORE] = self.gold_ore_bar
+        self.all_storage[STONE] = self.stone_bar
+        self.all_storage[PLANK] = self.wood_bar
 
         # start_time = time.time()
         # a = (time.time() - start_time) / 20
@@ -97,13 +97,15 @@ class Storage:
 
     def start(self):
         for res in self.resources:
-            if self.resources[res][COUNT] < self.check_resource[res]:
-                self.wood_bar.completedColour = "#e61919"
-            elif self.resources[res][COUNT] > self.check_resource[res]:
-                self.wood_bar.completedColour = "#0d730d"
-            else:
-                self.wood_bar.completedColour = "#e5e619"
-
+            try:
+                if self.resources[res][COUNT] < self.check_resource[res]:
+                    self.all_storage[res].completedColour = "#e61919"
+                elif self.resources[res][COUNT] > self.check_resource[res]:
+                    self.all_storage[res].completedColour = "#0d730d"
+                else:
+                    self.all_storage[res].completedColour = "#e5e619"
+            except KeyError:
+                pass
 
         # if self.resources[PLANK][COUNT] < self.wood_check:
         #     self.wood_bar.completedColour = "#e61919"
@@ -212,38 +214,53 @@ class Storage:
 
         self.background.fill(pygame.Color(43, 43, 43))
         if self.text_needed:
-            navigation_bar.draw_text(self.background, f'Wood {self.resources[PLANK][COUNT]} / {self.resources[PLANK][MAX]}',
-                                         15, 55, 115)
-            navigation_bar.draw_text(self.background, f'Gold ore {self.resources[GOLD_ORE][COUNT]} / {self.resources[GOLD_ORE][MAX]}',
-                                         15, 55, 165)
-            navigation_bar.draw_text(self.background, f'Stone {self.resources[STONE][COUNT]} / {self.resources[STONE][MAX]}',
-                                         15, 55, 215)
-            navigation_bar.draw_text(self.background, f'Iron ore {self.resources[IRON_ORE][COUNT]} / {self.resources[IRON_ORE][MAX]}',
-                                         15, 55, 265)
-            navigation_bar.draw_text(self.background, f'Fish {self.resources[FISH][COUNT]} / {self.resources[FISH][MAX]}',
-                                         15, 55, 315)
-            navigation_bar.draw_text(self.background, f'Wheat {self.resources[WHEAT][COUNT]} / {self.resources[WHEAT][MAX]}',
-                                         15, 55, 365)
-            navigation_bar.draw_text(self.background, f'Flour {self.resources[FLOUR][COUNT]} / {self.resources[FLOUR][MAX]}',
-                                         15, 55, 415)
+            navigation_bar.draw_text(self.background,
+                                     f'Wood {self.resources[PLANK][COUNT]} / {self.resources[PLANK][MAX]}',
+                                     15, 55, 115)
+            navigation_bar.draw_text(self.background,
+                                     f'Gold ore {self.resources[GOLD_ORE][COUNT]} / {self.resources[GOLD_ORE][MAX]}',
+                                     15, 55, 165)
+            navigation_bar.draw_text(self.background,
+                                     f'Stone {self.resources[STONE][COUNT]} / {self.resources[STONE][MAX]}',
+                                     15, 55, 215)
+            navigation_bar.draw_text(self.background,
+                                     f'Iron ore {self.resources[IRON_ORE][COUNT]} / {self.resources[IRON_ORE][MAX]}',
+                                     15, 55, 265)
+            navigation_bar.draw_text(self.background,
+                                     f'Fish {self.resources[FISH][COUNT]} / {self.resources[FISH][MAX]}',
+                                     15, 55, 315)
+            navigation_bar.draw_text(self.background,
+                                     f'Wheat {self.resources[WHEAT][COUNT]} / {self.resources[WHEAT][MAX]}',
+                                     15, 55, 365)
+            navigation_bar.draw_text(self.background,
+                                     f'Flour {self.resources[FLOUR][COUNT]} / {self.resources[FLOUR][MAX]}',
+                                     15, 55, 415)
             # navigation_bar.draw_text(self.background, f'Meat {self.resources[MEAT][COUNT]} / {self.resources[MEAT][MAX]}',
             #                              15, 55, 465)
-            navigation_bar.draw_text(self.background, f'Skin {self.resources[SKIN][COUNT]} / {self.resources[SKIN][MAX]}',
-                                         15, 300, 115)
-            navigation_bar.draw_text(self.background, f'Armor {self.resources[ARMOR][COUNT]} / {self.resources[ARMOR][MAX]}',
-                                         15, 300, 165)
-            navigation_bar.draw_text(self.background, f'Weapon {self.resources[WEAPON][COUNT]} / {self.resources[WEAPON][MAX]}',
-                                         15, 300, 215)
-            navigation_bar.draw_text(self.background, f'Clothes {self.resources[CLOTHES][COUNT]} / {self.resources[CLOTHES][MAX]}',
-                                         15, 300, 265)
-            navigation_bar.draw_text(self.background, f'Bread {self.resources[BREAD][COUNT]} / {self.resources[BREAD][MAX]}',
-                                         15, 300, 315)
-            navigation_bar.draw_text(self.background, f'Gold {self.resources[GOLD][COUNT]} / {self.resources[GOLD][MAX]}',
-                                         15, 300, 365)
-            navigation_bar.draw_text(self.background, f'Iron {self.resources[IRON][COUNT]} / {self.resources[IRON][MAX]}',
-                                         15, 300, 415)
-            navigation_bar.draw_text(self.background, f'Population {self.resources[PEOPLE][COUNT]} / {self.resources[PEOPLE][MAX]}',
-                                         20, 700, 10)
+            navigation_bar.draw_text(self.background,
+                                     f'Skin {self.resources[SKIN][COUNT]} / {self.resources[SKIN][MAX]}',
+                                     15, 300, 115)
+            navigation_bar.draw_text(self.background,
+                                     f'Armor {self.resources[ARMOR][COUNT]} / {self.resources[ARMOR][MAX]}',
+                                     15, 300, 165)
+            navigation_bar.draw_text(self.background,
+                                     f'Weapon {self.resources[WEAPON][COUNT]} / {self.resources[WEAPON][MAX]}',
+                                     15, 300, 215)
+            navigation_bar.draw_text(self.background,
+                                     f'Clothes {self.resources[CLOTHES][COUNT]} / {self.resources[CLOTHES][MAX]}',
+                                     15, 300, 265)
+            navigation_bar.draw_text(self.background,
+                                     f'Bread {self.resources[BREAD][COUNT]} / {self.resources[BREAD][MAX]}',
+                                     15, 300, 315)
+            navigation_bar.draw_text(self.background,
+                                     f'Gold {self.resources[GOLD][COUNT]} / {self.resources[GOLD][MAX]}',
+                                     15, 300, 365)
+            navigation_bar.draw_text(self.background,
+                                     f'Iron {self.resources[IRON][COUNT]} / {self.resources[IRON][MAX]}',
+                                     15, 300, 415)
+            navigation_bar.draw_text(self.background,
+                                     f'Population {self.resources[PEOPLE][COUNT]} / {self.resources[PEOPLE][MAX]}',
+                                     20, 700, 10)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -258,10 +275,9 @@ class Storage:
         self.background.fill(pygame.Color(43, 43, 43))
         self.text_needed = False
         for element in self.all_storage:
-            element.hide()
+            self.all_storage[element].hide()
 
     def show_all_storage(self):
         self.text_needed = True
         for element in self.all_storage:
-            element.show()
-            
+            self.all_storage[element].show()
