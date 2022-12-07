@@ -38,7 +38,7 @@ class Start:
         self.journal = journal_ui.Journal(self.manager, self.background)
         self.settings = settings_ui.Settings(self.manager, self.background, False)
         self.storage = storage_ui.Storage(self.manager, self.background, self.game)
-        self.workers = workers_ui.Workers(self.manager, self.background)
+        self.workers = workers_ui.Workers(self.manager, self.background, self.game)
         self.world = world_ui.World(self.manager, self.background)
         self.navigation = navigation_bar.NavigationBar(self.manager)
         self.navigation.hide_all_navigation()

@@ -25,7 +25,8 @@ class Retention:
 
     def save(self, game):
         for i in game.resources:
-            self.file[RES + i] = game.resources[i][COUNT]
+            if not i == PEOPLE:
+                self.file[RES + i] = game.resources[i][COUNT]
         self.file[MAP_INDEX] = len(game.houses)
         j = 0
         for i in game.houses:

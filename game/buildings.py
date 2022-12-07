@@ -41,6 +41,7 @@ class DynamicBuilding(Building):
 
     def download(self, w, lt):
         self.workers = w
+        self.game.resources[PEOPLE][COUNT] -= w
         self.last_tick = lt
 
     def add_worker(self):
@@ -53,7 +54,7 @@ class DynamicBuilding(Building):
 
     def remove_worker(self):
         if self.workers > 0:
-            self.game.resources[PEOPLE] += 1
+            self.game.resources[PEOPLE][COUNT] += 1
             self.workers -= 1
             return True
         else:

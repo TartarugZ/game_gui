@@ -16,6 +16,10 @@ class Game:
         self.state = STATE_TOWN
 
         self.resources = RESOURCES
+        self.buildings_by_name = {}
+
+        for b in BUILDINGS:
+            self.buildings_by_name[b] = pygame.sprite.Group()
 
         self.beach_spritesheet = spritesheet.Spritesheet('img/sprites/beach.jpg')
         self.water_spritesheet = spritesheet.Spritesheet('img/sprites/water.jpg')
@@ -31,10 +35,7 @@ class Game:
         self.houses = pygame.sprite.Group()
         self.places = pygame.sprite.Group()
         self.sprites_for_delete = pygame.sprite.Group()
-        self.buildings_by_name = {}
 
-        for b in BUILDINGS:
-            self.buildings_by_name[b] = pygame.sprite.Group()
 
         self.create_town_map()
         self.save_data.load(self)
@@ -118,13 +119,21 @@ class Game:
         # for r in self.resources:
         #     print(r + ': ' + str(self.resources[r]))
 
-    def add_worker(self, building):
-        for b in self.buildings_by_name[building[NAME]]:
+    def workers_in_current_type_building(self, build_name):
+        workers = 0
+        max_workers = 0
+        for build in self.buildings_by_name[build_name]:
+            workers += build.workers
+            max_workers += build.max_workers
+        return workers, max_workers
+
+    def add_worker(self, building_name):
+        for b in self.buildings_by_name[building_name]:
             if b.add_worker():
                 return
 
     def remove_worker(self, building):
-        for b in self.buildings_by_name[building[NAME]]:
+        for b in self.buildings_by_name[building]:
             if b.remove_worker():
                 return
 
