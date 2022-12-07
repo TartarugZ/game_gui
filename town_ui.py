@@ -148,25 +148,25 @@ class Town:
             self.houses.disable()
             for building in self.population:
                 building.show()
-        if self.material.pressed or not self.material.is_enabled:
+        elif self.material.pressed or not self.material.is_enabled:
             self.hide_all()
             self.enable_side_buttons()
             self.material.disable()
             for building in self.materials:
                 building.show()
-        if self.industry.pressed or not self.industry.is_enabled:
+        elif self.industry.pressed or not self.industry.is_enabled:
             self.hide_all()
             self.enable_side_buttons()
             self.industry.disable()
             for building in self.industries:
                 building.show()
-        if self.army.pressed or not self.army.is_enabled:
+        elif self.army.pressed or not self.army.is_enabled:
             self.hide_all()
             self.enable_side_buttons()
             self.army.disable()
             for building in self.armies:
                 building.show()
-        if self.happiness.pressed or not self.happiness.is_enabled:
+        elif self.happiness.pressed or not self.happiness.is_enabled:
             self.hide_all()
             self.enable_side_buttons()
             self.happiness.disable()
