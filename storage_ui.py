@@ -28,6 +28,9 @@ class Storage:
         self.all_storage = {}
         self.text_needed = True
 
+        self.last_tick = pygame.time.get_ticks()
+        self.cooldown = 1000
+
         self.wood_bar = ProgressBar(self.background,
                                     130, 100, 100, 40,
                                     lambda: self.resources[PLANK][COUNT] / self.resources[PLANK][MAX])
@@ -96,16 +99,19 @@ class Storage:
         #                    lambda: 0 + (time.time() - start_time) / 20)
 
     def start(self):
-        for res in self.resources:
-            try:
-                if self.resources[res][COUNT] < self.check_resource[res]:
-                    self.all_storage[res].completedColour = "#e61919"
-                elif self.resources[res][COUNT] > self.check_resource[res]:
-                    self.all_storage[res].completedColour = "#0d730d"
-                else:
-                    self.all_storage[res].completedColour = "#e5e619"
-            except KeyError:
-                pass
+        now = pygame.time.get_ticks()
+        if now - self.last_tick >= self.cooldown:
+            self.last_tick = now
+            for res in self.resources:
+                try:
+                    if self.resources[res][COUNT] < self.check_resource[res]:
+                        self.all_storage[res].completedColour = "#e61919"
+                    elif self.resources[res][COUNT] > self.check_resource[res]:
+                        self.all_storage[res].completedColour = "#0d730d"
+                    else:
+                        self.all_storage[res].completedColour = "#e5e619"
+                except KeyError:
+                    pass
 
         # if self.resources[PLANK][COUNT] < self.wood_check:
         #     self.wood_bar.completedColour = "#e61919"

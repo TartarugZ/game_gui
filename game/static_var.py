@@ -51,6 +51,7 @@ NAME = 'name'
 RESOURCES_CREATE = 'resources_create'
 RESOURCES_USE = 'resources_use'
 MAX_WORKERS = 'max_workers'
+IMAGE = 'image'
 
 COUNT = 'count'
 MAX = 'max'

@@ -21,21 +21,16 @@ class Game:
         for b in BUILDINGS:
             self.buildings_by_name[b] = pygame.sprite.Group()
 
-        self.beach_spritesheet = spritesheet.Spritesheet('img/sprites/beach.jpg')
-        self.water_spritesheet = spritesheet.Spritesheet('img/sprites/water.jpg')
-        self.grass_spritesheet = spritesheet.Spritesheet('img/sprites/grass.jpg')
-        self.ore_spritesheet = spritesheet.Spritesheet('img/sprites/ore.png')
-        self.stone_spritesheet = spritesheet.Spritesheet('img/sprites/stone.jpg')
+        self.ground_spritesheet = spritesheet.SpriteSheet('img/sprites/ground.png')
+        self.buildings_spritesheet = spritesheet.SpriteSheet('img/sprites/ground.png')
         self.save_data = Retention()
 
     def new(self):
         self.town_sprites = pygame.sprite.LayeredUpdates()
         self.playing = True
-        # self.build_sprites = pygame.sprite.LayeredUpdates()
         self.houses = pygame.sprite.Group()
         self.places = pygame.sprite.Group()
         self.sprites_for_delete = pygame.sprite.Group()
-
 
         self.create_town_map()
         self.save_data.load(self)
@@ -44,14 +39,14 @@ class Game:
         for i, row in enumerate(town_map):
             for j, column in enumerate(row):
                 if column == 'w':
-                    self.town_sprites.add(terra.Water(self, j + FIELD['x'], i + FIELD['y']))
+                    self.town_sprites.add(terra.Water(self, j + FIELD[X], i + FIELD[Y]))
                 elif column == '.':
-                    self.town_sprites.add(terra.Ground(self, j + FIELD['x'], i + FIELD['y']))
+                    self.town_sprites.add(terra.Ground(self, j + FIELD[X], i + FIELD[Y]))
                 elif column == '0':
                     pass
                 else:
-                    self.town_sprites.add(terra.Ground(self, j + FIELD['x'], i + FIELD['y']))
-                    mount = terra.Mountain(self, j + FIELD['x'], i + FIELD['y'], column)
+                    self.town_sprites.add(terra.Ground(self, j + FIELD[X], i + FIELD[Y]))
+                    mount = terra.Mountain(self, j + FIELD[X], i + FIELD[Y], column)
                     self.town_sprites.add(mount)
                     self.sprites_for_delete.add(mount)
 
@@ -73,8 +68,7 @@ class Game:
             if self.check_place(x * TILESIZE, y * TILESIZE) and \
                     self.check_building(x * TILESIZE, y * TILESIZE) and \
                     self.check_cost(building_type[COST]):
-                if self.put_building(x, y, building_type) is None:
-                    return
+                self.put_building(x, y, building_type)
                 self.pay(building_type[COST])
         except IndexError:
             pass
@@ -114,11 +108,6 @@ class Game:
         for res in cost:
             self.resources[res][COUNT] -= cost[res]
 
-    def info(self):
-        pass
-        # for r in self.resources:
-        #     print(r + ': ' + str(self.resources[r]))
-
     def workers_in_current_type_building(self, build_name):
         workers = 0
         max_workers = 0
@@ -137,52 +126,17 @@ class Game:
             if b.remove_worker():
                 return
 
-    def events(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                self.playing = False
-                self.running = False
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_a:
-                    self.state = STATE_BUILD
-                    self.show_place(BUILDINGS[GOLD_MINE])
-                if event.key == pygame.K_d:
-                    self.state = STATE_TOWN
-                    self.delete_places()
-                if self.state == STATE_TOWN:
-                    if event.key == pygame.K_UP:
-                        self.add_worker(BUILDINGS[GOLD_MINE])
-                    if event.key == pygame.K_DOWN:
-                        self.remove_worker(BUILDINGS[GOLD_MINE])
-            if self.state == STATE_BUILD:
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    if event.button == 1:
-                        x = event.pos[0] // TILESIZE
-                        y = event.pos[1] // TILESIZE
-                        self.build_building(x, y, BUILDINGS[GOLD_MINE])
-
     def update(self):
         self.town_sprites.update()
 
     def draw(self):
         self.screen.fill(BLACK)
-        pygame.draw.rect(self.screen, RED, (FIELD['x'] * TILESIZE + TILESIZE, FIELD['y'] * TILESIZE + TILESIZE,
-                                            FIELD['width'] * TILESIZE, FIELD['height'] * TILESIZE), 1)
-        self.places.draw(self.screen)
         self.town_sprites.draw(self.screen)
         self.clock.tick(FPS)
-        self.info()
         pygame.display.update()
-
-    def main(self):
-        self.events()
-        self.update()
-        self.draw()
-        self.save_data.save(self)
 
     def game_over(self):
         pass
 
     def intro_screen(self):
         pass
-

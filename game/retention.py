@@ -36,7 +36,6 @@ class Retention:
                     Y: i.y // TILESIZE,
                     NAME: i.name,
                     WORKER: i.workers,
-                    LAST_TICK: i.last_tick
                 }
             if BUILDINGS[i.name][TYPE] == STATIC or BUILDINGS[i.name][TYPE] == WAREHOUSE:
                 self.file[MAP_INDEX + str(j)] = {
@@ -53,7 +52,12 @@ class Retention:
             except FileNotFoundError and KeyError:
                 pass
         try:
-            for i in range(self.file[MAP_INDEX]):
+            index = self.file[MAP_INDEX]
+        except FileNotFoundError and KeyError:
+            return
+
+        for i in range(index):
+            try:
                 x = self.file[MAP_INDEX + str(i)][X]
                 y = self.file[MAP_INDEX + str(i)][Y]
                 b = BUILDINGS[self.file[MAP_INDEX + str(i)][NAME]]
@@ -61,12 +65,12 @@ class Retention:
                     house = game.put_building(x, y, b)
                     house.download(
                         self.file[MAP_INDEX + str(i)][WORKER],
-                        self.file[MAP_INDEX + str(i)][LAST_TICK]
                     )
                 elif b[TYPE] == STATIC or b[TYPE] == WAREHOUSE:
                     game.put_building(x, y, b)
-        except FileNotFoundError and KeyError:
-            pass
+            except FileNotFoundError and KeyError:
+                pass
+
 
 
 def __del__(self):

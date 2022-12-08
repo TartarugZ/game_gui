@@ -15,6 +15,12 @@ class Building(pygame.sprite.Sprite):
 
         self.name = building_type[NAME]
 
+        self.image_x, self.image_y = building_type[IMAGE]
+        self.image = self.game.ground_spritesheet.get_sprite(self.image_x, self.image_y, self.width, self.height)
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
         self.resource_create = building_type[RESOURCES_CREATE]
         self.game.buildings_by_name[building_type[NAME]].add(self)
 
@@ -22,13 +28,6 @@ class Building(pygame.sprite.Sprite):
 class DynamicBuilding(Building):
     def __init__(self, game, x, y, building_info):
         super().__init__(game, x, y, building_info)
-
-        self.image = pygame.Surface((self.width, self.height))
-        self.image.fill(RED)
-
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
 
         self.remove_extra_sprite(building_info)
 
@@ -39,10 +38,9 @@ class DynamicBuilding(Building):
         self.last_tick = pygame.time.get_ticks()
         self.cooldown = 1000
 
-    def download(self, w, lt):
+    def download(self, w):
         self.workers = w
         self.game.resources[PEOPLE][COUNT] -= w
-        self.last_tick = lt
 
     def add_worker(self):
         if self.workers < self.max_workers and self.game.resources[PEOPLE][COUNT] > 0:
@@ -93,13 +91,6 @@ class StaticBuilding(Building):
     def __init__(self, game, x, y, building_info):
         super().__init__(game, x, y, building_info)
 
-        self.image = pygame.Surface((self.width, self.height))
-        self.image.fill(BLUE)
-
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
-
         for res in self.resource_create:
             self.game.resources[res][MAX] += self.resource_create[res]
             self.game.resources[res][COUNT] += self.resource_create[res]
@@ -108,13 +99,6 @@ class StaticBuilding(Building):
 class StorageBuilding(Building):
     def __init__(self, game, x, y, building_info):
         super().__init__(game, x, y, building_info)
-
-        self.image = pygame.Surface((self.width, self.height))
-        self.image.fill(BLUE)
-
-        self.rect = self.image.get_rect()
-        self.rect.x = self.x
-        self.rect.y = self.y
 
         for res in self.resource_create:
             self.game.resources[res][MAX] += self.resource_create[res]

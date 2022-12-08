@@ -189,9 +189,8 @@ class Start:
                         y = event.pos[1] // TILESIZE
                         self.game.build_building(x, y, BUILDINGS[GOLD_MELT])
                 if event.type == pygame.QUIT:
-                    self.is_running = False
                     self.game.save_data.save(self.game)
-                    exit()
+                    self.is_running = False
                 # self.k += 1
                 # print(self.k)
                 self.manager.process_events(event)

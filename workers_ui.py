@@ -141,14 +141,6 @@ class Workers:
         self.buttons.append(self.hunting_plus)
         self.buttons.append(self.hunting_minus)
 
-        self.shipyard_minus = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((0, 350), (150, 25)),
-                                                           text='-',
-                                                           manager=self.manager)
-        self.shipyard_plus = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((270, 350), (150, 25)),
-                                                          text='+',
-                                                          manager=self.manager)
-        self.buttons.append(self.shipyard_plus)
-        self.buttons.append(self.shipyard_minus)
 
     def worker_check(self):
         self.population = self.game.resources[PEOPLE][COUNT]
@@ -165,7 +157,6 @@ class Workers:
         self.gold_melt, self.gold_melt_max = self.game.workers_in_current_type_building(GOLD_MELT)
         self.iron_melt, self.iron_melt_max = self.game.workers_in_current_type_building(IRON_MELT)
         self.tailor, self.tailor_max = self.game.workers_in_current_type_building(TAILOR)
-        self.shipyard, self.shipyard_max = self.game.workers_in_current_type_building(SHIPYARD)
         self.hunt, self.hunt_max = self.game.workers_in_current_type_building(HUNTER)
 
     def start(self):
@@ -215,8 +206,6 @@ class Workers:
                                      15, 210, 305)
             navigation_bar.draw_text(self.background, f'Hunting {self.hunt}/{self.hunt_max}',
                                      15, 210, 330)
-            navigation_bar.draw_text(self.background, f'Shipyard {self.shipyard}/{self.shipyard_max}',
-                                     15, 210, 355)
 
         if self.field_minus.pressed or (self.field_minus.held and self.count > 20):
             if self.field > 0:
@@ -330,13 +319,6 @@ class Workers:
             if unemployed_people > 0 and self.hunt < self.hunt_max:
                 self.game.add_worker(HUNTER)
 
-        elif self.shipyard_minus.pressed or (self.shipyard_minus.held and self.count > 20):
-            if self.shipyard > 0:
-                self.game.remove_worker(SHIPYARD)
-
-        elif self.shipyard_plus.pressed or (self.shipyard_plus.held and self.count > 20):
-            if unemployed_people > 0 and self.shipyard < self.shipyard_max:
-                self.game.add_worker(SHIPYARD)
 
         if unemployed_people > 0:
             for button in self.buttons:
@@ -356,7 +338,6 @@ class Workers:
             self.iron_melt_plus.disable()
             self.tailor_plus.disable()
             self.hunting_plus.disable()
-            self.shipyard_plus.disable()
 
     def hide_all_workers(self):
         self.background.fill(pygame.Color(43, 43, 43))

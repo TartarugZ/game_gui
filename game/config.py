@@ -111,7 +111,8 @@ BUILDINGS = {
         NAME: HOUSE,
         RESOURCES_CREATE: {
             PEOPLE: 2,
-        }
+        },
+        IMAGE: (0, 0)
     },
 
     GOLD_MINE: {
@@ -127,7 +128,8 @@ BUILDINGS = {
         RESOURCES_USE: {
             STONE: 47
         },
-        MAX_WORKERS: 3
+        MAX_WORKERS: 3,
+        IMAGE: (0, 0)
     },
 
     STONE_MINE: {
@@ -141,7 +143,8 @@ BUILDINGS = {
             STONE: 2,
         },
         RESOURCES_USE: None,
-        MAX_WORKERS: 3
+        MAX_WORKERS: 3,
+        IMAGE: (0, 0)
     },
 
     IRON_MINE: {
@@ -155,7 +158,8 @@ BUILDINGS = {
             IRON_ORE: 2,
         },
         RESOURCES_USE: None,
-        MAX_WORKERS: 3
+        MAX_WORKERS: 3,
+        IMAGE: (0, 0)
     },
 
     SAWMILL: {
@@ -169,7 +173,8 @@ BUILDINGS = {
             PLANK: 2,
         },
         RESOURCES_USE: None,
-        MAX_WORKERS: 3
+        MAX_WORKERS: 3,
+        IMAGE: (0, 0)
     },
 
     HUNTER: {
@@ -183,7 +188,8 @@ BUILDINGS = {
             SKIN: 2,
         },
         RESOURCES_USE: None,
-        MAX_WORKERS: 3
+        MAX_WORKERS: 3,
+        IMAGE: (0, 0)
     },
 
     GOLD_MELT: {
@@ -199,7 +205,8 @@ BUILDINGS = {
         RESOURCES_USE: {
             GOLD_ORE: 2
         },
-        MAX_WORKERS: 3
+        MAX_WORKERS: 3,
+        IMAGE: (0, 0)
     },
 
     IRON_MELT: {
@@ -215,7 +222,8 @@ BUILDINGS = {
         RESOURCES_USE: {
             IRON_ORE: 2
         },
-        MAX_WORKERS: 3
+        MAX_WORKERS: 3,
+        IMAGE: (0, 0)
     },
 
     GUNSMITH: {
@@ -229,7 +237,8 @@ BUILDINGS = {
             WEAPON: 2,
         },
         RESOURCES_USE: None,
-        MAX_WORKERS: 3
+        MAX_WORKERS: 3,
+        IMAGE: (0, 0)
     },
 
     BLACKSMITH: {
@@ -243,7 +252,8 @@ BUILDINGS = {
             ARMOR: 2,
         },
         RESOURCES_USE: None,
-        MAX_WORKERS: 3
+        MAX_WORKERS: 3,
+        IMAGE: (0, 0)
     },
 
     WHEAT_FIELD: {
@@ -257,7 +267,8 @@ BUILDINGS = {
             WHEAT: 2,
         },
         RESOURCES_USE: None,
-        MAX_WORKERS: 3
+        MAX_WORKERS: 3,
+        IMAGE: (0, 0)
     },
 
     MILL: {
@@ -271,7 +282,8 @@ BUILDINGS = {
             FLOUR: 2,
         },
         RESOURCES_USE: None,
-        MAX_WORKERS: 3
+        MAX_WORKERS: 3,
+        IMAGE: (0, 0)
     },
 
     BAKERY: {
@@ -285,7 +297,8 @@ BUILDINGS = {
             BREAD: 2,
         },
         RESOURCES_USE: None,
-        MAX_WORKERS: 3
+        MAX_WORKERS: 3,
+        IMAGE: (0, 0)
     },
 
     TAILOR: {
@@ -299,7 +312,8 @@ BUILDINGS = {
             CLOTHES: 2,
         },
         RESOURCES_USE: None,
-        MAX_WORKERS: 3
+        MAX_WORKERS: 3,
+        IMAGE: (0, 0)
     },
 
     FISHERMAN: {
@@ -313,7 +327,8 @@ BUILDINGS = {
             FISH: 2,
         },
         RESOURCES_USE: None,
-        MAX_WORKERS: 3
+        MAX_WORKERS: 3,
+        IMAGE: (0, 0)
     },
 
     STORAGE: {
@@ -338,7 +353,8 @@ BUILDINGS = {
             BREAD: 25,
             CLOTHES: 14,
             FISH: 14,
-        }
+        },
+        IMAGE: (0, 0)
     },
 
     BARRACKS: {
@@ -350,7 +366,8 @@ BUILDINGS = {
         NAME: BARRACKS,
         RESOURCES_CREATE: {
             ARMY: 200
-        }
+        },
+        IMAGE: (0, 0)
     },
 
     SHIPYARD: {
@@ -362,7 +379,8 @@ BUILDINGS = {
         NAME: SHIPYARD,
         RESOURCES_CREATE: {
             FLEET: 200
-        }
+        },
+        IMAGE: (0, 0)
     },
 
 }
