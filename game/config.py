@@ -129,7 +129,7 @@ BUILDINGS = {
             STONE: 47
         },
         MAX_WORKERS: 3,
-        IMAGE: (0, 0)
+        IMAGE: (64, 0)
     },
 
     STONE_MINE: {
@@ -144,7 +144,7 @@ BUILDINGS = {
         },
         RESOURCES_USE: None,
         MAX_WORKERS: 3,
-        IMAGE: (0, 0)
+        IMAGE: (192, 0)
     },
 
     IRON_MINE: {
@@ -159,7 +159,7 @@ BUILDINGS = {
         },
         RESOURCES_USE: None,
         MAX_WORKERS: 3,
-        IMAGE: (0, 0)
+        IMAGE: (96, 0)
     },
 
     SAWMILL: {
@@ -174,7 +174,7 @@ BUILDINGS = {
         },
         RESOURCES_USE: None,
         MAX_WORKERS: 3,
-        IMAGE: (0, 0)
+        IMAGE: (160, 0)
     },
 
     HUNTER: {
@@ -189,7 +189,7 @@ BUILDINGS = {
         },
         RESOURCES_USE: None,
         MAX_WORKERS: 3,
-        IMAGE: (0, 0)
+        IMAGE: (224, 0)
     },
 
     GOLD_MELT: {
@@ -206,7 +206,7 @@ BUILDINGS = {
             GOLD_ORE: 2
         },
         MAX_WORKERS: 3,
-        IMAGE: (0, 0)
+        IMAGE: (288, 0)
     },
 
     IRON_MELT: {
@@ -223,7 +223,7 @@ BUILDINGS = {
             IRON_ORE: 2
         },
         MAX_WORKERS: 3,
-        IMAGE: (0, 0)
+        IMAGE: (320, 0)
     },
 
     GUNSMITH: {
@@ -238,7 +238,7 @@ BUILDINGS = {
         },
         RESOURCES_USE: None,
         MAX_WORKERS: 3,
-        IMAGE: (0, 0)
+        IMAGE: (128, 0)
     },
 
     BLACKSMITH: {
@@ -253,7 +253,7 @@ BUILDINGS = {
         },
         RESOURCES_USE: None,
         MAX_WORKERS: 3,
-        IMAGE: (0, 0)
+        IMAGE: (32, 0)
     },
 
     WHEAT_FIELD: {
@@ -268,7 +268,7 @@ BUILDINGS = {
         },
         RESOURCES_USE: None,
         MAX_WORKERS: 3,
-        IMAGE: (0, 0)
+        IMAGE: (416, 0)
     },
 
     MILL: {
@@ -283,7 +283,7 @@ BUILDINGS = {
         },
         RESOURCES_USE: None,
         MAX_WORKERS: 3,
-        IMAGE: (0, 0)
+        IMAGE: (448, 0)
     },
 
     BAKERY: {
@@ -298,7 +298,7 @@ BUILDINGS = {
         },
         RESOURCES_USE: None,
         MAX_WORKERS: 3,
-        IMAGE: (0, 0)
+        IMAGE: (480, 0)
     },
 
     TAILOR: {
@@ -313,7 +313,7 @@ BUILDINGS = {
         },
         RESOURCES_USE: None,
         MAX_WORKERS: 3,
-        IMAGE: (0, 0)
+        IMAGE: (512, 0)
     },
 
     FISHERMAN: {
@@ -328,7 +328,7 @@ BUILDINGS = {
         },
         RESOURCES_USE: None,
         MAX_WORKERS: 3,
-        IMAGE: (0, 0)
+        IMAGE: (544, 0)
     },
 
     STORAGE: {
@@ -354,7 +354,7 @@ BUILDINGS = {
             CLOTHES: 14,
             FISH: 14,
         },
-        IMAGE: (0, 0)
+        IMAGE: (256, 0)
     },
 
     BARRACKS: {
@@ -367,7 +367,7 @@ BUILDINGS = {
         RESOURCES_CREATE: {
             ARMY: 200
         },
-        IMAGE: (0, 0)
+        IMAGE: (352, 0)
     },
 
     SHIPYARD: {
@@ -380,7 +380,7 @@ BUILDINGS = {
         RESOURCES_CREATE: {
             FLEET: 200
         },
-        IMAGE: (0, 0)
+        IMAGE: (384, 0)
     },
 
 }

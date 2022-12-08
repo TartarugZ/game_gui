@@ -44,8 +44,6 @@ class Start:
         self.navigation.hide_all_navigation()
         self.hide_all()
 
-        self.k = 0
-
     def start(self):
         menu = menu_ui.Menu(self.manager, self.background, self.window_surface)
         menu.hide_all_menu()
@@ -59,12 +57,14 @@ class Start:
 
             time_delta = self.navigation.clock.tick(FPS) / 1000.0
             self.navigation.some.disable()
-            self.game.update()
             if not self.navigation.journal.is_enabled:
+                self.town.stop_build()
+                self.game.delete_places()
                 self.hide_all()
                 self.journal.show_all_journal()
                 self.journal.start()
             elif not self.navigation.army.is_enabled:
+                self.town.stop_build()
                 self.hide_all()
                 self.army.show_all_army()
                 self.army.start()
@@ -74,18 +74,22 @@ class Start:
                 self.town.start()
                 self.game.draw()
             elif not self.navigation.world.is_enabled:
+                self.town.stop_build()
                 self.hide_all()
                 self.world.show_all_world()
                 self.world.start()
             elif not self.navigation.storage.is_enabled:
+                self.town.stop_build()
                 self.hide_all()
                 self.storage.show_all_storage()
                 self.storage.start()
             elif not self.navigation.workers.is_enabled:
+                self.town.stop_build()
                 self.hide_all()
                 self.workers.show_all_workers()
                 self.workers.start()
             elif not self.navigation.settings.is_enabled:
+                self.town.stop_build()
                 self.hide_all()
                 self.settings.show_all_settings()
                 self.settings.start()
@@ -195,6 +199,7 @@ class Start:
                 # print(self.k)
                 self.manager.process_events(event)
                 pygame_widgets.update(event)
+            self.game.update()
             self.manager.update(time_delta)
             self.window_surface.blit(self.background, (0, 0))
             self.manager.draw_ui(self.window_surface)

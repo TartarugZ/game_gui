@@ -16,7 +16,7 @@ class Building(pygame.sprite.Sprite):
         self.name = building_type[NAME]
 
         self.image_x, self.image_y = building_type[IMAGE]
-        self.image = self.game.ground_spritesheet.get_sprite(self.image_x, self.image_y, self.width, self.height)
+        self.image = self.game.buildings_spritesheet.get_sprite(self.image_x, self.image_y, self.width, self.height)
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y

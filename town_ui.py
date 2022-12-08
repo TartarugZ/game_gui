@@ -240,14 +240,15 @@ class Town:
             self.gold_melt.disable()
             self.game.show_place(BUILDINGS[GOLD_MELT])
         elif self.stop.pressed:
-            self.enable_side_buttons()
-            self.enable_all()
-            self.hide_all()
-            self.game.delete_places()
+            self.stop_build()
         elif self.details.pressed:
             pass  # To game code
 
-
+    def stop_build(self):
+        self.enable_side_buttons()
+        self.enable_all()
+        self.hide_all()
+        self.game.delete_places()
     def hide_all_town(self):
         self.hide_all()
         self.houses.hide()
