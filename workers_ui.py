@@ -1,7 +1,7 @@
 import navigation_bar
 import pygame
 import pygame_gui
-from game.config import *
+from gamelogic.config import *
 
 class Workers:
     def __init__(self, manager, background, game):

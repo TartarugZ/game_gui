@@ -2,7 +2,7 @@ import shelve
 
 import pygame
 
-from game.config import *
+from gamelogic.config import *
 
 MAP_INDEX = 'index'
 WORKER = 'worker'
@@ -24,26 +24,31 @@ class Retention:
         return False
 
     def save(self, game):
-        for i in game.resources:
-            if not i == PEOPLE:
-                self.file[RES + i] = game.resources[i][COUNT]
+        for r in game.resources:
+            if not r == PEOPLE:
+                self.file[RES + r] = game.resources[r][COUNT]
         self.file[MAP_INDEX] = len(game.houses)
         j = 0
-        for i in game.houses:
-            if BUILDINGS[i.name][TYPE] == DYNAMIC:
+        for h in game.houses:
+            if BUILDINGS[h.name][TYPE] == DYNAMIC:
                 self.file[MAP_INDEX + str(j)] = {
-                    X: i.x // TILESIZE,
-                    Y: i.y // TILESIZE,
-                    NAME: i.name,
-                    WORKER: i.workers,
+                    X: h.x // TILESIZE,
+                    Y: h.y // TILESIZE,
+                    NAME: h.name,
+                    WORKER: h.workers,
                 }
-            if BUILDINGS[i.name][TYPE] == STATIC or BUILDINGS[i.name][TYPE] == WAREHOUSE:
+            else:
                 self.file[MAP_INDEX + str(j)] = {
-                    X: i.x // TILESIZE,
-                    Y: i.y // TILESIZE,
-                    NAME: i.name,
+                    X: h.x // TILESIZE,
+                    Y: h.y // TILESIZE,
+                    NAME: h.name,
                 }
             j += 1
+        for a in game.army:
+            self.file[game.army[a][NAME]] = {
+                COUNT: game.army[a][COUNT],
+                ORDER: game.army[a][ORDER]
+            }
 
     def load(self, game):
         for i in game.resources:
@@ -66,11 +71,16 @@ class Retention:
                     house.download(
                         self.file[MAP_INDEX + str(i)][WORKER],
                     )
-                elif b[TYPE] == STATIC or b[TYPE] == WAREHOUSE:
+                else:
                     game.put_building(x, y, b)
             except FileNotFoundError and KeyError:
                 pass
-
+        for a in game.army:
+            try:
+                game.army[a][COUNT] = self.file[a][COUNT]
+                game.army[a][ORDER] = self.file[a][ORDER]
+            except FileNotFoundError and KeyError:
+                pass
 
 
 def __del__(self):

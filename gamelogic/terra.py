@@ -1,7 +1,7 @@
 import random
 
 import pygame
-from game.config import *
+from gamelogic.config import *
 
 
 class Ground(pygame.sprite.Sprite):

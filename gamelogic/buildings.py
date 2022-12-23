@@ -1,5 +1,5 @@
 import pygame
-from game.config import *
+from gamelogic.config import *
 
 
 class Building(pygame.sprite.Sprite):
@@ -102,3 +102,40 @@ class StorageBuilding(Building):
 
         for res in self.resource_create:
             self.game.resources[res][MAX] += self.resource_create[res]
+
+
+class WarBuilding(Building):
+    def __init__(self, game, x, y, building_info):
+        super().__init__(game, x, y, building_info)
+
+        self.last_tick = pygame.time.get_ticks()
+        self.cooldown = 1000
+
+        self.needed_soldiers = []
+        self.train = 1
+
+        if building_info[NAME] == BARRACKS:
+            self.army_type = MILITARY
+        elif building_info[NAME] == SHIPYARD:
+            self.army_type = FLEET
+
+        for t in self.resource_create:
+            self.game.army[t][MAX] += self.resource_create[t]
+
+    def update(self):
+        now = pygame.time.get_ticks()
+        if now - self.last_tick >= self.cooldown:
+            self.last_tick = now
+            for solder in self.game.army:
+                if self.game.army[solder][ORDER] > 0 and self.game.army[solder][TYPE] == self.army_type:
+                    if self.game.army[solder][ORDER] - self.train >= 0:
+                        self.game.army[solder][ORDER] -= self.train
+                        self.game.army[solder][COUNT] += self.train
+                    elif self.game.army[solder][ORDER] > 0:
+                        self.game.army[solder][COUNT] += self.game.army[solder][ORDER]
+                        self.game.army[solder][ORDER] -= self.game.army[solder][ORDER]
+                    else:
+                        self.needed_soldiers.remove(solder)
+
+    def add_soldiers_to_train(self, soldier):
+        self.needed_soldiers.append(soldier)

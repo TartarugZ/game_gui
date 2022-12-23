@@ -14,8 +14,8 @@ import storage_ui
 import settings_ui
 import world_ui
 import workers_ui
-import game.game
-from game.config import *
+import gamelogic.game
+from gamelogic.config import *
 
 
 class Start:
@@ -31,7 +31,7 @@ class Start:
         icon = pygame.image.load('img/f5.png')
         pygame.display.set_icon(icon)
 
-        self.game = game.game.Game(self.background)
+        self.game = gamelogic.game.Game(self.background)
 
         self.town = town_ui.Town(self.manager, self.background, self.game)
         self.army = army_ui.Army(self.manager, self.background)

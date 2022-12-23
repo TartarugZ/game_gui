@@ -1,10 +1,10 @@
 import pygame
-from game.config import *
-import game.buildings as buildings
-import game.terra as terra
-import game.spritesheet as spritesheet
-import game.place as place
-from game.retention import Retention
+from gamelogic.config import *
+import gamelogic.buildings as buildings
+import gamelogic.terra as terra
+import gamelogic.spritesheet as spritesheet
+import gamelogic.place as place
+from gamelogic.retention import Retention
 
 
 class Game:
@@ -13,9 +13,10 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.running = True
-        self.state = STATE_TOWN
 
-        self.resources = RESOURCES
+        self.resources = START_RESOURCES
+        self.army = START_ARMY
+        self.expedition = EXPEDITION
         self.buildings_by_name = {}
 
         for b in BUILDINGS:
@@ -27,7 +28,6 @@ class Game:
 
     def new(self):
         self.town_sprites = pygame.sprite.LayeredUpdates()
-        self.playing = True
         self.houses = pygame.sprite.Group()
         self.places = pygame.sprite.Group()
         self.sprites_for_delete = pygame.sprite.Group()
@@ -67,9 +67,9 @@ class Game:
         try:
             if self.check_place(x * TILESIZE, y * TILESIZE) and \
                     self.check_building(x * TILESIZE, y * TILESIZE) and \
-                    self.check_cost(building_type[COST]):
+                    self.check_cost_resource(building_type[COST]):
                 self.put_building(x, y, building_type)
-                self.pay(building_type[COST])
+                self.pay_resource(building_type[COST])
         except IndexError:
             pass
 
@@ -80,6 +80,8 @@ class Game:
             new_house = buildings.StaticBuilding(self, x, y, building_type)
         elif building_type[TYPE] == WAREHOUSE:
             new_house = buildings.StorageBuilding(self, x, y, building_type)
+        elif building_type[TYPE] == WAR:
+            new_house = buildings.WarBuilding(self, x, y, building_type)
         else:
             return None
         self.houses.add(new_house)
@@ -98,13 +100,13 @@ class Game:
                 return False
         return True
 
-    def check_cost(self, cost):
+    def check_cost_resource(self, cost):
         for res in cost:
             if cost[res] > self.resources[res][COUNT]:
                 return False
         return True
 
-    def pay(self, cost):
+    def pay_resource(self, cost):
         for res in cost:
             self.resources[res][COUNT] -= cost[res]
 
@@ -135,8 +137,31 @@ class Game:
         self.clock.tick(FPS)
         pygame.display.update()
 
-    def game_over(self):
-        pass
+    def train_soldiers(self, count, soldier):
+        if self.check_cost_resource(self.army[soldier][COST]):
+            self.pay_resource(self.army[soldier][COST])
+            self.army[soldier][ORDER] += count
 
-    def intro_screen(self):
-        pass
+    def check_cost_army(self, cost):
+        for s in cost:
+            if cost[s] > self.army[s][COUNT]:
+                return False
+        return True
+
+    def pay_army(self, cost):
+        for s in cost:
+            self.army[s][COUNT] -= cost[s]
+
+    def get_resource_from_expedition(self, ex_resources):
+        for res in ex_resources:
+            self.resources[res][COUNT] += ex_resources[res]
+
+    def start_expedition(self, expedition_type):
+        ex = self.expedition[expedition_type]
+        if self.check_cost_army(ex[COST]):
+            self.pay_army(ex[COST])
+            self.get_resource_from_expedition(ex[RESOURCES_CREATE])
+
+
+
+

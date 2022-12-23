@@ -1,35 +1,8 @@
-from game.static_var import *
-
-# Window size
-WINDOW_HEIGHT = 640
-WINDOW_WIDTH = 1280
-
-# States
-STATE_TOWN = 1
-STATE_BUILD = 2
-
-# Settings
-FPS = 60
-TILESIZE = 32
-
-# Layers
-HOUSE_LAYER = 3
-PLACE_LAYER = 2
-TERRA_LAYER = 1
-
-# Colors
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-GREEN = (0, 255, 0)
-BLUE = (0, 0, 255)
-COLOR_STONE = (200, 200, 200)
-COLOR_GOLD = (255, 215, 0)
-WATER = (0, 255, 255)
-GROUND = (11, 200, 81)
-BEACH = (244, 164, 96)
+from gamelogic.static_var import *
+from gamelogic.settings import *
 
 # Resources
-RESOURCES = {
+START_RESOURCES = {
     PEOPLE: {
         COUNT: 2,
         MAX: 2
@@ -90,13 +63,60 @@ RESOURCES = {
         COUNT: 100,
         MAX: 100
     },
-    ARMY: {
-        COUNT: 100,
-        MAX: 200
-    },
-    FLEET: {
+
+}
+
+START_ARMY = {
+    KNIGHT: {
+        NAME: KNIGHT,
+        TYPE: MILITARY,
         COUNT: 0,
-        MAX: 200
+        MAX: 0,
+        ORDER: 0,
+        COST: {
+            GOLD: 0
+        }
+    },
+    ARCHER: {
+        NAME: ARCHER,
+        TYPE: MILITARY,
+        COUNT: 0,
+        MAX: 0,
+        ORDER: 0,
+        COST: {
+            GOLD: 0
+        }
+    },
+    MAGE: {
+        NAME: MAGE,
+        TYPE: MILITARY,
+        COUNT: 0,
+        MAX: 0,
+        ORDER: 0,
+        COST: {
+            GOLD: 0
+        }
+    },
+    HEALER: {
+        NAME: HEALER,
+        TYPE: MILITARY,
+        COUNT: 0,
+        MAX: 0,
+        ORDER: 0,
+        COST: {
+            GOLD: 0
+        }
+    },
+
+    SHIP: {
+        NAME: SHIP,
+        TYPE: FLEET,
+        COUNT: 0,
+        MAX: 0,
+        ORDER: 0,
+        COST: {
+            GOLD: 0
+        }
     }
 }
 
@@ -362,10 +382,10 @@ BUILDINGS = {
             STONE: 100,
         },
         PLACE: '.',
-        TYPE: WAREHOUSE,
+        TYPE: WAR,
         NAME: BARRACKS,
         RESOURCES_CREATE: {
-            ARMY: 200
+            KNIGHT: 200
         },
         IMAGE: (352, 0)
     },
@@ -375,14 +395,33 @@ BUILDINGS = {
             STONE: 100,
         },
         PLACE: 'R',
-        TYPE: WAREHOUSE,
+        TYPE: WAR,
         NAME: SHIPYARD,
         RESOURCES_CREATE: {
-            FLEET: 200
+            SHIP: 200
         },
         IMAGE: (384, 0)
     },
+}
 
+EXPEDITION = {
+    1: {
+        COST: {
+            KNIGHT: 0,
+            HEALER: 0,
+        },
+        RESOURCES_CREATE: {
+            STONE: 100,
+        },
+    },
+    2: {
+        COST: None,
+        RESOURCES_CREATE: None,
+    },
+    3: {
+        COST: None,
+        RESOURCES_CREATE: None,
+    }
 }
 
 # Town map

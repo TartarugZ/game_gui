@@ -11,7 +11,7 @@ import world_ui
 import workers_ui
 import town_ui
 import pygame_widgets
-from game.config import *
+from gamelogic.config import *
 
 
 class Storage:

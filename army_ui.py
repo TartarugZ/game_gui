@@ -73,17 +73,17 @@ class Army:
         # for event in pygame.event.get():
         #     if event.type == pygame_gui.UI_BUTTON_PRESSED:
         #         if event.ui_element == self.distance:
-        #             pass  # To game code
+        #             pass  # To gamelogic code
         #         elif event.ui_element == self.melee:
-        #             pass  # To game code
+        #             pass  # To gamelogic code
         #         elif event.ui_element == self.heal:
-        #             pass  # To game code
+        #             pass  # To gamelogic code
         #         elif event.ui_element == self.schrooner:
-        #             pass  # To game code
+        #             pass  # To gamelogic code
         #         elif event.ui_element == self.drakkar:
-        #             pass  # To game code
+        #             pass  # To gamelogic code
         #         elif event.ui_element == self.caravelle:
-        #             pass  # To game code
+        #             pass  # To gamelogic code
 
     def hide_all_army(self):
         self.background.fill(pygame.Color(43, 43, 43))

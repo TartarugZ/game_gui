@@ -1,7 +1,7 @@
 import pygame
 import pygame_gui
 from pygame_gui.core import ObjectID
-from game.config import *
+from gamelogic.config import *
 
 
 class Town:
@@ -242,7 +242,7 @@ class Town:
         elif self.stop.pressed:
             self.stop_build()
         elif self.details.pressed:
-            pass  # To game code
+            pass  # To gamelogic code
 
     def stop_build(self):
         self.enable_side_buttons()

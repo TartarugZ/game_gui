@@ -2,6 +2,7 @@
 DYNAMIC = 'dynamic'
 STATIC = 'static'
 WAREHOUSE = 'warehouse'
+WAR = 'war'
 
 # Name of Game resources
 PEOPLE = 'people'
@@ -20,8 +21,16 @@ BREAD = 'bread'
 CLOTHES = 'clothes'
 FISH = 'fish'
 
-ARMY = 'army'
+MILITARY = 'military'
 FLEET = 'fleet'
+
+KNIGHT = 'knight'
+ARCHER = 'archer'
+MAGE = 'mage'
+HEALER = 'healer'
+
+SHIP = 'ship'
+
 
 # Name of Game building
 HOUSE = 'house'
@@ -53,8 +62,10 @@ RESOURCES_USE = 'resources_use'
 MAX_WORKERS = 'max_workers'
 IMAGE = 'image'
 
+
 COUNT = 'count'
 MAX = 'max'
+ORDER = 'order'
 
 # Field const
 X = 'x'
