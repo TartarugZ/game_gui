@@ -249,6 +249,7 @@ class Town:
         self.enable_all()
         self.hide_all()
         self.game.delete_places()
+
     def hide_all_town(self):
         self.hide_all()
         self.houses.hide()

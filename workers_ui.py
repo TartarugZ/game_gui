@@ -3,6 +3,7 @@ import pygame
 import pygame_gui
 from gamelogic.config import *
 
+
 class Workers:
     def __init__(self, manager, background, game):
         self.manager = manager

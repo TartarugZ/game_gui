@@ -67,11 +67,11 @@ START_RESOURCES = {
 }
 
 START_ARMY = {
-    KNIGHT: {
-        NAME: KNIGHT,
+    SWORDSMAN: {
+        NAME: SWORDSMAN,
         TYPE: MILITARY,
         COUNT: 0,
-        MAX: 0,
+        MAX: 10,
         ORDER: 0,
         COST: {
             GOLD: 0
@@ -81,43 +81,53 @@ START_ARMY = {
         NAME: ARCHER,
         TYPE: MILITARY,
         COUNT: 0,
-        MAX: 0,
+        MAX: 10,
         ORDER: 0,
         COST: {
             GOLD: 0
         }
     },
-    MAGE: {
-        NAME: MAGE,
+    PRIEST: {
+        NAME: PRIEST,
         TYPE: MILITARY,
         COUNT: 0,
-        MAX: 0,
-        ORDER: 0,
-        COST: {
-            GOLD: 0
-        }
-    },
-    HEALER: {
-        NAME: HEALER,
-        TYPE: MILITARY,
-        COUNT: 0,
-        MAX: 0,
+        MAX: 10,
         ORDER: 0,
         COST: {
             GOLD: 0
         }
     },
 
-    SHIP: {
-        NAME: SHIP,
+    SCHROONER: {
+        NAME: SCHROONER,
         TYPE: FLEET,
         COUNT: 0,
-        MAX: 0,
+        MAX: 10,
         ORDER: 0,
         COST: {
             GOLD: 0
         }
-    }
+    },
+    DRAKKAR: {
+            NAME: DRAKKAR,
+            TYPE: FLEET,
+            COUNT: 0,
+            MAX: 10,
+            ORDER: 0,
+            COST: {
+                GOLD: 0
+            }
+        },
+    CARAVELLE: {
+            NAME: CARAVELLE,
+            TYPE: FLEET,
+            COUNT: 0,
+            MAX: 10,
+            ORDER: 0,
+            COST: {
+                GOLD: 0
+            }
+        }
 }
 
 # Dictionary with buildings settings
@@ -385,7 +395,7 @@ BUILDINGS = {
         TYPE: WAR,
         NAME: BARRACKS,
         RESOURCES_CREATE: {
-            KNIGHT: 200
+            SWORDSMAN: 200
         },
         IMAGE: (352, 0)
     },
@@ -398,7 +408,9 @@ BUILDINGS = {
         TYPE: WAR,
         NAME: SHIPYARD,
         RESOURCES_CREATE: {
-            SHIP: 200
+            SCHROONER: 200,
+            DRAKKAR: 400,
+            CARAVELLE: 600
         },
         IMAGE: (384, 0)
     },
@@ -407,20 +419,30 @@ BUILDINGS = {
 EXPEDITION = {
     1: {
         COST: {
-            KNIGHT: 0,
-            HEALER: 0,
+            SWORDSMAN: 0,
+            PRIEST: 0,
         },
         RESOURCES_CREATE: {
             STONE: 100,
         },
     },
     2: {
-        COST: None,
-        RESOURCES_CREATE: None,
+        COST: {
+            SWORDSMAN: 0,
+            PRIEST: 0,
+        },
+        RESOURCES_CREATE: {
+            STONE: 200,
+        },
     },
     3: {
-        COST: None,
-        RESOURCES_CREATE: None,
+        COST: {
+            SWORDSMAN: 0,
+            PRIEST: 0,
+        },
+        RESOURCES_CREATE: {
+            STONE: 300,
+        },
     }
 }
 
@@ -451,3 +473,12 @@ FIELD = {
     WIDTH: len(town_map[0]) - 2,
     HEIGHT: len(town_map) - 2,
 }
+
+SOLDIERS = {
+        'swordsman': SWORDSMAN,
+        'archer': ARCHER,
+        'priest': PRIEST,
+        'schrooner': SCHROONER,
+        'drakkar': DRAKKAR,
+        'caravelle': CARAVELLE
+    }

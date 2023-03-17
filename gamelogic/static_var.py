@@ -24,12 +24,14 @@ FISH = 'fish'
 MILITARY = 'military'
 FLEET = 'fleet'
 
-KNIGHT = 'knight'
+SWORDSMAN = 'swordsman'
 ARCHER = 'archer'
 MAGE = 'mage'
-HEALER = 'healer'
+PRIEST = 'priest'
 
-SHIP = 'ship'
+SCHROONER = 'schrooner'
+DRAKKAR = 'drakkar'
+CARAVELLE = 'caravelle'
 
 
 # Name of Game building

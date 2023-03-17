@@ -34,12 +34,12 @@ class Start:
         self.game = gamelogic.game.Game(self.background)
 
         self.town = town_ui.Town(self.manager, self.background, self.game)
-        self.army = army_ui.Army(self.manager, self.background)
+        self.army = army_ui.Army(self.manager, self.background, self.game)
         self.journal = journal_ui.Journal(self.manager, self.background)
         self.settings = settings_ui.Settings(self.manager, self.background, False)
         self.storage = storage_ui.Storage(self.manager, self.background, self.game)
         self.workers = workers_ui.Workers(self.manager, self.background, self.game)
-        self.world = world_ui.World(self.manager, self.background)
+        self.world = world_ui.World(self.manager, self.background, self.game)
         self.navigation = navigation_bar.NavigationBar(self.manager)
         self.navigation.hide_all_navigation()
         self.hide_all()
@@ -56,7 +56,6 @@ class Start:
                 self.game.save_data.save(self.game)
 
             time_delta = self.navigation.clock.tick(FPS) / 1000.0
-            self.navigation.some.disable()
             if not self.navigation.journal.is_enabled:
                 self.town.stop_build()
                 self.game.delete_places()
@@ -93,8 +92,6 @@ class Start:
                 self.hide_all()
                 self.settings.show_all_settings()
                 self.settings.start()
-            elif not self.navigation.some.is_enabled:
-                pass
             if self.navigation.town.pressed:
                 self.navigation.enable_all_navigation()
                 self.navigation.town.disable()
@@ -116,8 +113,9 @@ class Start:
             elif self.navigation.settings.pressed:
                 self.navigation.enable_all_navigation()
                 self.navigation.settings.disable()
-            elif self.navigation.some.pressed:
-                pass
+            elif self.navigation.exit.pressed:
+                self.game.save_data.save(self.game)
+                self.is_running = False
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1 and not self.town.house.is_enabled:
@@ -195,8 +193,7 @@ class Start:
                 if event.type == pygame.QUIT:
                     self.game.save_data.save(self.game)
                     self.is_running = False
-                # self.k += 1
-                # print(self.k)
+
                 self.manager.process_events(event)
                 pygame_widgets.update(event)
             self.game.update()

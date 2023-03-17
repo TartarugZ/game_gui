@@ -1,28 +1,25 @@
 import pygame
 import navigation_bar
 import pygame_gui
+from gamelogic.config import *
 
 
 class Army:
-    def __init__(self, manager, background):
+
+    def __init__(self, manager, background, game):
+        self.game = game
         self.manager = manager
         self.background = background
-        self.troops = 0
-        self.fleet = 0
-        self.max_troops = 0
-        self.max_fleet = 0
-        self.distance_number = 0
-        self.melee_number = 0
-        self.heal_number = 0
-        self.schrooner_number = 0
-        self.drakkar_number = 0
-        self.caravelle_number = 0
-        self.max_distance_number = 0
-        self.max_melee_number = 0
-        self.max_heal_number = 0
-        self.max_schrooner_number = 0
-        self.max_drakkar_number = 0
-        self.max_caravelle_number = 0
+        self.troops = self.game.army[SWORDSMAN][COUNT] + self.game.army[ARCHER][COUNT] + self.game.army[PRIEST][COUNT]
+        self.fleet = self.game.army[SCHROONER][COUNT] + self.game.army[DRAKKAR][COUNT] + self.game.army[CARAVELLE][COUNT]
+        self.max_troops = self.game.army[SWORDSMAN][MAX]
+        self.max_fleet = self.game.army[SCHROONER][MAX]
+        self.archer_number = self.game.army[ARCHER][COUNT]
+        self.swordsman_number = self.game.army[SWORDSMAN][COUNT]
+        self.priest_number = self.game.army[PRIEST][COUNT]
+        self.schrooner_number = self.game.army[SCHROONER][COUNT]
+        self.drakkar_number = self.game.army[DRAKKAR][COUNT]
+        self.caravelle_number = self.game.army[CARAVELLE][COUNT]
         self.all_army = []
         self.text_needed = True
 
@@ -35,55 +32,81 @@ class Army:
         self.heal = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((250, 250), (100, 50)),
                                                  text='Priest',
                                                  manager=self.manager)
-        self.schrooner = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((450, 150), (100, 50)),
-                                                      text='Schrooner',
-                                                      manager=self.manager)
-        self.drakkar = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((450, 200), (100, 50)),
-                                                    text='Drakkar',
-                                                    manager=self.manager)
-        self.caravelle = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((450, 250), (100, 50)),
-                                                      text='Caravelle',
-                                                      manager=self.manager)
+        self.ship_1 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((450, 150), (100, 50)),
+                                                   text='Schrooner',
+                                                   manager=self.manager)
+        self.ship_2 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((450, 200), (100, 50)),
+                                                   text='Drakkar',
+                                                   manager=self.manager)
+        self.ship_3 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((450, 250), (100, 50)),
+                                                   text='Caravelle',
+                                                   manager=self.manager)
         self.all_army.append(self.distance)
         self.all_army.append(self.melee)
         self.all_army.append(self.heal)
-        self.all_army.append(self.schrooner)
-        self.all_army.append(self.drakkar)
-        self.all_army.append(self.caravelle)
+        self.all_army.append(self.ship_1)
+        self.all_army.append(self.ship_2)
+        self.all_army.append(self.ship_3)
 
     def start(self):
+        self.troops = self.game.army[SWORDSMAN][COUNT] + self.game.army[ARCHER][COUNT] + self.game.army[PRIEST][COUNT]
+        self.fleet = self.game.army[SCHROONER][COUNT] + self.game.army[DRAKKAR][COUNT] + self.game.army[CARAVELLE][
+            COUNT]
+        self.max_troops = self.game.army[SWORDSMAN][MAX]
+        self.max_fleet = self.game.army[SCHROONER][MAX]
+        self.archer_number = self.game.army[ARCHER][COUNT]
+        self.swordsman_number = self.game.army[SWORDSMAN][COUNT]
+        self.priest_number = self.game.army[PRIEST][COUNT]
+        self.schrooner_number = self.game.army[SCHROONER][COUNT]
+        self.drakkar_number = self.game.army[DRAKKAR][COUNT]
+        self.caravelle_number = self.game.army[CARAVELLE][COUNT]
         self.background.fill(pygame.Color(43, 43, 43))
         if self.text_needed:
             navigation_bar.draw_text(self.background,
                                      f'Army:{self.troops}/{self.max_troops}  Fleet:{self.fleet}/{self.max_fleet}',
                                      40, 400, 30)
             navigation_bar.draw_text(self.background,
-                                     f'{self.distance_number}/{self.max_distance_number}', 30, 150, 165)
+                                     f'{self.archer_number}', 30, 150, 160)
             navigation_bar.draw_text(self.background,
-                                     f'{self.melee_number}/{self.max_melee_number}', 30, 150, 215)
+                                     f'{self.swordsman_number}', 30, 150, 210)
             navigation_bar.draw_text(self.background,
-                                     f'{self.heal_number}/{self.max_heal_number}', 30, 150, 265)
+                                     f'{self.priest_number}', 30, 150, 260)
             navigation_bar.draw_text(self.background,
-                                     f'{self.schrooner_number}/{self.max_schrooner_number}', 30, 600, 165)
+                                     f'{self.schrooner_number}', 30, 600, 160)
             navigation_bar.draw_text(self.background,
-                                     f'{self.drakkar_number}/{self.max_drakkar_number}', 30, 600, 215)
+                                     f'{self.drakkar_number}', 30, 600, 210)
             navigation_bar.draw_text(self.background,
-                                     f'{self.caravelle_number}/{self.max_caravelle_number}', 30, 600, 265)
+                                     f'{self.caravelle_number}', 30, 600, 260)
+        if self.troops < self.max_troops:
+            for element in range(len(self.all_army)):
+                if element < 3:
+                    self.all_army[element].enable()
+            if self.distance.pressed:
+                self.game.train_soldiers(1, SOLDIERS[self.distance.text.lower()])
+            if self.melee.pressed:
+                self.game.train_soldiers(1, SOLDIERS[self.melee.text.lower()])
+            if self.heal.pressed:
+                self.game.train_soldiers(1, SOLDIERS[self.heal.text.lower()])
+        else:
+            for element in range(len(self.all_army)):
+                if element < 3:
+                    self.all_army[element].disable()
 
-        # for event in pygame.event.get():
-        #     if event.type == pygame_gui.UI_BUTTON_PRESSED:
-        #         if event.ui_element == self.distance:
-        #             pass  # To gamelogic code
-        #         elif event.ui_element == self.melee:
-        #             pass  # To gamelogic code
-        #         elif event.ui_element == self.heal:
-        #             pass  # To gamelogic code
-        #         elif event.ui_element == self.schrooner:
-        #             pass  # To gamelogic code
-        #         elif event.ui_element == self.drakkar:
-        #             pass  # To gamelogic code
-        #         elif event.ui_element == self.caravelle:
-        #             pass  # To gamelogic code
+        if self.fleet < self.max_fleet:
+            for element in range(len(self.all_army)):
+                if element >= 3:
+                    self.all_army[element].enable()
+            if self.ship_1.pressed:
+                self.game.train_soldiers(1, SOLDIERS[self.ship_1.text.lower()])
+            if self.ship_2.pressed:
+                self.game.train_soldiers(1, SOLDIERS[self.ship_2.text.lower()])
+            if self.ship_3.pressed:
+                self.game.train_soldiers(1, SOLDIERS[self.ship_3.text.lower()])
+        else:
+            for element in range(len(self.all_army)):
+                if element >= 3:
+                    self.all_army[element].disable()
+
 
     def hide_all_army(self):
         self.background.fill(pygame.Color(43, 43, 43))
