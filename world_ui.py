@@ -2,6 +2,7 @@ import pygame
 import pygame_gui
 import navigation_bar
 from gamelogic.config import *
+import pyautogui as pg
 
 
 class World:
@@ -32,11 +33,17 @@ class World:
             navigation_bar.draw_text(self.background, "{name}".format(name=str(self.game.expedition[3][RESOURCES_CREATE])[1:-1].replace('\'','')), 20, 500, 260)
 
         if self.exp_easy.pressed:
-            self.game.start_expedition(1)
+            a = self.game.start_expedition(1)
+            if not a:
+                pg.alert('You do not have enough resources!', 'Bad news')
         if self.exp_normal.pressed:
-            self.game.start_expedition(2)
+            a = self.game.start_expedition(2)
+            if not a:
+                pg.alert('You do not have enough resources!', 'Bad news')
         if self.exp_hard.pressed:
-            self.game.start_expedition(3)
+            a = self.game.start_expedition(3)
+            if not a:
+                pg.alert('You do not have enough resources!', 'Bad news')
 
     def hide_all_world(self):
         self.background.fill(pygame.Color(43, 43, 43))

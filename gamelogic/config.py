@@ -74,7 +74,7 @@ START_ARMY = {
         MAX: 10,
         ORDER: 0,
         COST: {
-            GOLD: 0
+            GOLD: 10000
         }
     },
     ARCHER: {

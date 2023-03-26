@@ -2,6 +2,7 @@ import pygame
 import navigation_bar
 import pygame_gui
 from gamelogic.config import *
+import pyautogui as pg
 
 
 class Army:
@@ -11,7 +12,8 @@ class Army:
         self.manager = manager
         self.background = background
         self.troops = self.game.army[SWORDSMAN][COUNT] + self.game.army[ARCHER][COUNT] + self.game.army[PRIEST][COUNT]
-        self.fleet = self.game.army[SCHROONER][COUNT] + self.game.army[DRAKKAR][COUNT] + self.game.army[CARAVELLE][COUNT]
+        self.fleet = self.game.army[SCHROONER][COUNT] + self.game.army[DRAKKAR][COUNT] + self.game.army[CARAVELLE][
+            COUNT]
         self.max_troops = self.game.army[SWORDSMAN][MAX]
         self.max_fleet = self.game.army[SCHROONER][MAX]
         self.archer_number = self.game.army[ARCHER][COUNT]
@@ -82,11 +84,17 @@ class Army:
                 if element < 3:
                     self.all_army[element].enable()
             if self.distance.pressed:
-                self.game.train_soldiers(1, SOLDIERS[self.distance.text.lower()])
+                a = self.game.train_soldiers(1, SOLDIERS[self.distance.text.lower()])
+                if not a:
+                    pg.alert('You do not have enough resources!', 'Bad news')
             if self.melee.pressed:
-                self.game.train_soldiers(1, SOLDIERS[self.melee.text.lower()])
+                a = self.game.train_soldiers(1, SOLDIERS[self.melee.text.lower()])
+                if not a:
+                    pg.alert('You do not have enough resources!', 'Bad news')
             if self.heal.pressed:
-                self.game.train_soldiers(1, SOLDIERS[self.heal.text.lower()])
+                a = self.game.train_soldiers(1, SOLDIERS[self.heal.text.lower()])
+                if not a:
+                    pg.alert('You do not have enough resources!', 'Bad news')
         else:
             for element in range(len(self.all_army)):
                 if element < 3:
@@ -97,16 +105,21 @@ class Army:
                 if element >= 3:
                     self.all_army[element].enable()
             if self.ship_1.pressed:
-                self.game.train_soldiers(1, SOLDIERS[self.ship_1.text.lower()])
+                a = self.game.train_soldiers(1, SOLDIERS[self.ship_1.text.lower()])
+                if not a:
+                    pg.alert('You do not have enough resources!', 'Bad news')
             if self.ship_2.pressed:
-                self.game.train_soldiers(1, SOLDIERS[self.ship_2.text.lower()])
+                a = self.game.train_soldiers(1, SOLDIERS[self.ship_2.text.lower()])
+                if not a:
+                    pg.alert('You do not have enough resources!', 'Bad news')
             if self.ship_3.pressed:
-                self.game.train_soldiers(1, SOLDIERS[self.ship_3.text.lower()])
+                a = self.game.train_soldiers(1, SOLDIERS[self.ship_3.text.lower()])
+                if not a:
+                    pg.alert('You do not have enough resources!', 'Bad news')
         else:
             for element in range(len(self.all_army)):
                 if element >= 3:
                     self.all_army[element].disable()
-
 
     def hide_all_army(self):
         self.background.fill(pygame.Color(43, 43, 43))

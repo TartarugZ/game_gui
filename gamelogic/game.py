@@ -141,6 +141,9 @@ class Game:
         if self.check_cost_resource(self.army[soldier][COST]):
             self.pay_resource(self.army[soldier][COST])
             self.army[soldier][ORDER] += count
+            return True
+        else:
+            return False
 
     def check_cost_army(self, cost):
         for s in cost:
@@ -161,6 +164,9 @@ class Game:
         if self.check_cost_army(ex[COST]):
             self.pay_army(ex[COST])
             self.get_resource_from_expedition(ex[RESOURCES_CREATE])
+            return True
+        else:
+            return False
 
 
 
