@@ -1,4 +1,6 @@
-import datetime
+import random
+from os import listdir
+from os.path import isfile, join
 
 import pygame
 import pygame_gui
@@ -15,14 +17,19 @@ import settings_ui
 import world_ui
 import workers_ui
 import gamelogic.game
+import gamelogic.config
 from gamelogic.config import *
+
+
+def insert_into_playlist(pl, music_file):
+    pl.append(music_file)
 
 
 class Start:
     def __init__(self, true):
         pygame.init()
+        pygame.mixer.pre_init(44100, -16, 2, 2048)
         self.is_running = true
-
         self.window_surface = pygame.display.set_mode((800, 600))
         self.background = pygame.Surface((800, 600))
         self.background.fill(pygame.Color(43, 43, 43))
@@ -30,10 +37,24 @@ class Start:
         self.manager = pygame_gui.UIManager(pygame.display.get_window_size(), 'theme.json')
         icon = pygame.image.load('img/f5.png')
         pygame.display.set_icon(icon)
-
         self.game = gamelogic.game.Game(self.background)
+        menu = menu_ui.Menu(self.manager, self.background, self.window_surface)
+        menu.hide_all_menu()
+        del menu
 
-        self.town = town_ui.Town(self.manager, self.background, self.game)
+        music = ['music/' + g for g in listdir("music") if isfile(join("music", g)) and g.endswith('.mp3' or '.wav')]
+        random.shuffle(music)
+        self.playlist = music
+        self.playlist_original = music.copy()
+        pygame.mixer.music.load(self.playlist[0])
+        self.playlist.pop(0)
+        pygame.mixer.music.play()
+        pygame.mixer.music.queue(self.playlist[0])
+        self.playlist.pop(0)
+        pygame.mixer.music.set_volume(gamelogic.config.VOLUME)
+        pygame.mixer.music.set_endevent(pygame.KEYUP)
+
+        self.town = town_ui.Town(self.manager, self.background, self.game, self)
         self.army = army_ui.Army(self.manager, self.background, self.game)
         self.journal = journal_ui.Journal(self.manager, self.background)
         self.settings = settings_ui.Settings(self.manager, self.background, False)
@@ -45,17 +66,30 @@ class Start:
         self.hide_all()
 
     def start(self):
-        menu = menu_ui.Menu(self.manager, self.background, self.window_surface)
-        menu.hide_all_menu()
         self.navigation.show_all_navigation()
         self.town.show_side_buttons()
         self.navigation.town.disable()
         self.game.new()
         while self.is_running:
+            pygame.mixer.music.set_volume(gamelogic.config.VOLUME)
+            if not pygame.mixer.music.get_busy():
+                self.playlist = self.playlist_original.copy()
+                pygame.mixer.music.load(self.playlist[0])
+                self.playlist.pop(0)
+                pygame.mixer.music.play()
+                pygame.mixer.music.queue(self.playlist[0])
+                self.playlist.pop(0)
             if self.game.save_data.check_cooldown():
                 self.game.save_data.save(self.game)
 
             time_delta = self.navigation.clock.tick(FPS) / 1000.0
+            if not self.town.details.is_enabled or self.town.details.pressed:
+                self.town.details.disable()
+                self.navigation.enable_all_navigation()
+                self.town.stop_build()
+                self.game.delete_places()
+                self.hide_all()
+                self.town.show_details()
             if not self.navigation.journal.is_enabled:
                 self.town.stop_build()
                 self.game.delete_places()
@@ -117,6 +151,17 @@ class Start:
                 self.game.save_data.save(self.game)
                 self.is_running = False
             for event in pygame.event.get():
+
+                if event.type == pygame.KEYUP:
+                    if len(self.playlist) > 0:
+                        print(self.playlist)
+                        pygame.mixer.music.queue(self.playlist[0])
+                        self.playlist.pop(0)
+                    else:
+                        self.playlist = self.playlist_original.copy()
+                        pygame.mixer.music.queue(self.playlist[0])
+                        self.playlist.pop(0)
+
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if event.button == 1 and not self.town.house.is_enabled:
                         x = event.pos[0] // TILESIZE
@@ -192,7 +237,7 @@ class Start:
                         self.game.build_building(x, y, BUILDINGS[GOLD_MELT])
                 if event.type == pygame.QUIT:
                     self.game.save_data.save(self.game)
-                    self.is_running = False
+                    exit()
 
                 self.manager.process_events(event)
                 pygame_widgets.update(event)
@@ -212,5 +257,7 @@ class Start:
         self.world.hide_all_world()
 
 
-a = Start(True)
-a.start()
+while True:
+    a = Start(True)
+    a.start()
+    del a

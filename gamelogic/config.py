@@ -1,3 +1,5 @@
+import json
+
 from gamelogic.static_var import *
 from gamelogic.settings import *
 
@@ -74,7 +76,8 @@ START_ARMY = {
         MAX: 10,
         ORDER: 0,
         COST: {
-            GOLD: 10000
+            GOLD: 10000,
+            IRON: 40
         }
     },
     ARCHER: {
@@ -84,7 +87,7 @@ START_ARMY = {
         MAX: 10,
         ORDER: 0,
         COST: {
-            GOLD: 0
+            STONE: 1000
         }
     },
     PRIEST: {
@@ -419,8 +422,8 @@ BUILDINGS = {
 EXPEDITION = {
     1: {
         COST: {
-            SWORDSMAN: 0,
-            PRIEST: 0,
+            ARCHER: 25,
+            PRIEST: 5,
         },
         RESOURCES_CREATE: {
             STONE: 100,
@@ -428,8 +431,8 @@ EXPEDITION = {
     },
     2: {
         COST: {
-            SWORDSMAN: 0,
-            PRIEST: 0,
+            SWORDSMAN: 100,
+            ARCHER: 700,
         },
         RESOURCES_CREATE: {
             STONE: 200,
@@ -438,7 +441,7 @@ EXPEDITION = {
     3: {
         COST: {
             SWORDSMAN: 0,
-            PRIEST: 0,
+            PRIEST: 5000,
         },
         RESOURCES_CREATE: {
             STONE: 300,
@@ -482,3 +485,27 @@ SOLDIERS = {
         'drakkar': DRAKKAR,
         'caravelle': CARAVELLE
     }
+
+
+def get_volume():
+    volume = 0
+    f = open("save/locals.json", "r")
+    save = json.load(f)
+    if save.get('volume'):
+        volume = save.get('volume')
+    f.close()
+    return volume
+
+
+def get_autosave():
+    autosave = 0
+    f = open("save/locals.json", "r")
+    save = json.load(f)
+    if save.get('volume'):
+        autosave = save.get('autosave')
+    f.close()
+    return autosave
+
+
+VOLUME = get_volume()
+AUTOSAVE = get_autosave()

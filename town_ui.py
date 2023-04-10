@@ -1,13 +1,17 @@
 import pygame
 import pygame_gui
 from pygame_gui.core import ObjectID
+
+import gamelogic.config
+import navigation_bar
 from gamelogic.config import *
 
 
 class Town:
-    def __init__(self, manager, background, g):
+    def __init__(self, manager, background, g, main):
         self.manager = manager
         self.background = background
+        self.main = main
         self.population = []
         self.materials = []
         self.industries = []
@@ -134,6 +138,7 @@ class Town:
                                                     manager=self.manager,
                                                     object_id=ObjectID(class_id=None, object_id='#details'))
         self.hide_all()
+        self.stop.disable()
 
     def start(self):
         if self.houses.pressed or not self.houses.is_enabled:
@@ -171,83 +176,100 @@ class Town:
             self.enable_all()
             self.house.disable()
             self.game.show_place(BUILDINGS[HOUSE])
+            self.stop.enable()
         elif self.gold_mine.pressed:
             self.enable_all()
             self.gold_mine.disable()
             self.game.show_place(BUILDINGS[GOLD_MINE])
+            self.stop.enable()
         elif self.stone_mine.pressed:
             self.enable_all()
             self.stone_mine.disable()
             self.game.show_place(BUILDINGS[STONE_MINE])
+            self.stop.enable()
         elif self.iron_mine.pressed:
             self.enable_all()
             self.iron_mine.disable()
             self.game.show_place(BUILDINGS[IRON_MINE])
+            self.stop.enable()
         elif self.sawmill.pressed:
             self.enable_all()
             self.sawmill.disable()
             self.game.show_place(BUILDINGS[SAWMILL])
+            self.stop.enable()
         elif self.storage.pressed:
             self.enable_all()
             self.storage.disable()
             self.game.show_place(BUILDINGS[STORAGE])
+            self.stop.enable()
         elif self.fishing.pressed:
             self.enable_all()
             self.fishing.disable()
             self.game.show_place(BUILDINGS[FISHERMAN])
+            self.stop.enable()
         elif self.wheat_field.pressed:
             self.enable_all()
             self.wheat_field.disable()
             self.game.show_place(BUILDINGS[WHEAT_FIELD])
+            self.stop.enable()
         elif self.mill.pressed:
             self.enable_all()
             self.mill.disable()
             self.game.show_place(BUILDINGS[MILL])
+            self.stop.enable()
         elif self.bakery.pressed:
             self.enable_all()
             self.bakery.disable()
             self.game.show_place(BUILDINGS[BAKERY])
+            self.stop.enable()
         elif self.hunting.pressed:
             self.enable_all()
             self.hunting.disable()
             self.game.show_place(BUILDINGS[HUNTER])
+            self.stop.enable()
         elif self.blacksmith.pressed:
             self.enable_all()
             self.blacksmith.disable()
             self.game.show_place(BUILDINGS[BLACKSMITH])
+            self.stop.enable()
         elif self.gunsmith.pressed:
             self.enable_all()
             self.gunsmith.disable()
             self.game.show_place(BUILDINGS[GUNSMITH])
+            self.stop.enable()
         elif self.barracks.pressed:
             self.enable_all()
             self.barracks.disable()
             self.game.show_place(BUILDINGS[BARRACKS])
+            self.stop.enable()
         elif self.shipyard.pressed:
             self.enable_all()
             self.shipyard.disable()
             self.game.show_place(BUILDINGS[SHIPYARD])
+            self.stop.enable()
         elif self.tailor.pressed:
             self.enable_all()
             self.tailor.disable()
             self.game.show_place(BUILDINGS[TAILOR])
+            self.stop.enable()
         elif self.iron_melt.pressed:
             self.enable_all()
             self.iron_melt.disable()
             self.game.show_place(BUILDINGS[IRON_MELT])
+            self.stop.enable()
         elif self.gold_melt.pressed:
             self.enable_all()
             self.gold_melt.disable()
             self.game.show_place(BUILDINGS[GOLD_MELT])
-        elif self.stop.pressed:
+            self.stop.enable()
+        if self.stop.pressed:
             self.stop_build()
-        elif self.details.pressed:
-            pass  # To gamelogic code
 
     def stop_build(self):
         self.enable_side_buttons()
         self.enable_all()
         self.hide_all()
+        self.stop.disable()
         self.game.delete_places()
 
     def hide_all_town(self):
@@ -302,3 +324,9 @@ class Town:
         self.happiness.enable()
         self.details.enable()
         self.stop.enable()
+
+    def show_details(self):
+        navigation_bar.draw_text_left(self.background, 'House', 20, 20, 20)
+        navigation_bar.draw_text_left(self.background, '   ' +
+                                      str(gamelogic.config.BUILDINGS[HOUSE][COST])[1:-1].replace('\'', ' ') +
+                                      '     House provides people for your village. 1 house → 2 people', 20, 80, 20)

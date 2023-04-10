@@ -25,13 +25,12 @@ class Game:
         self.ground_spritesheet = spritesheet.SpriteSheet('img/sprites/ground.png')
         self.buildings_spritesheet = spritesheet.SpriteSheet('img/sprites/buildings.png')
         self.save_data = Retention()
-
-    def new(self):
         self.town_sprites = pygame.sprite.LayeredUpdates()
         self.houses = pygame.sprite.Group()
         self.places = pygame.sprite.Group()
         self.sprites_for_delete = pygame.sprite.Group()
 
+    def new(self):
         self.create_town_map()
         self.save_data.load(self)
 
@@ -132,7 +131,7 @@ class Game:
         self.town_sprites.update()
 
     def draw(self):
-        self.screen.fill(BLACK)
+        self.screen.fill((43, 43, 43))
         self.town_sprites.draw(self.screen)
         self.clock.tick(FPS)
         pygame.display.update()
@@ -141,9 +140,6 @@ class Game:
         if self.check_cost_resource(self.army[soldier][COST]):
             self.pay_resource(self.army[soldier][COST])
             self.army[soldier][ORDER] += count
-            return True
-        else:
-            return False
 
     def check_cost_army(self, cost):
         for s in cost:
@@ -164,10 +160,10 @@ class Game:
         if self.check_cost_army(ex[COST]):
             self.pay_army(ex[COST])
             self.get_resource_from_expedition(ex[RESOURCES_CREATE])
-            return True
-        else:
-            return False
 
+    def check_expedition(self, expedition_type):
+        ex = self.expedition[expedition_type]
+        return self.check_cost_army(ex[COST])
 
-
-
+    def check_soldiers(self, soldier):
+        return self.check_cost_resource(self.army[soldier][COST])

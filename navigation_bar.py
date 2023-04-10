@@ -2,11 +2,19 @@ import pygame
 import pygame_gui
 
 
-def draw_text(surf, text, size, x, y):
+def draw_text(surf, text, size, x, y, colour=(187, 187, 187)):
     font = pygame.font.Font('fonts/TimesNewRomanRegular.ttf', size)
-    text_surface = font.render(text, True, (187, 187, 187))
+    text_surface = font.render(text, True, colour)
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
+    surf.blit(text_surface, text_rect)
+
+
+def draw_text_left(surf, text, size, x, y, colour=(187, 187, 187)):
+    font = pygame.font.Font('fonts/TimesNewRomanRegular.ttf', size)
+    text_surface = font.render(text, True, colour)
+    text_rect = text_surface.get_rect()
+    text_rect.topleft = (x,y)
     surf.blit(text_surface, text_rect)
 
 
@@ -14,7 +22,7 @@ class NavigationBar:
     def __init__(self, manager):
         self.manager = manager
         self.clock = pygame.time.Clock()
- 
+
         self.journal = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((0, 500), (200, 50)),
                                                     text='Journal',
                                                     manager=self.manager)
@@ -39,7 +47,7 @@ class NavigationBar:
         self.exit = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((600, 550), (200, 50)),
                                                  text='Save & Exit',
                                                  manager=self.manager)
-        
+
     def hide_all_navigation(self):
         self.journal.hide()
         self.town.hide()
@@ -49,7 +57,7 @@ class NavigationBar:
         self.world.hide()
         self.settings.hide()
         self.exit.hide()
-        
+
     def show_all_navigation(self):
         self.journal.show()
         self.town.show()
@@ -59,7 +67,7 @@ class NavigationBar:
         self.world.show()
         self.settings.show()
         self.exit.show()
-    
+
     def enable_all_navigation(self):
         self.journal.enable()
         self.town.enable()
@@ -68,4 +76,3 @@ class NavigationBar:
         self.army.enable()
         self.world.enable()
         self.settings.enable()
-        

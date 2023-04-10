@@ -13,10 +13,11 @@ class Journal:
         self.background = background
         self.story_tb = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect((0, 0), (800, 500)),
                                                       manager=self.manager, html_text="")
-
-    def start(self):
         with open('story.txt', encoding='utf-8', mode='r') as f:
             self.story_tb.set_text(f.read())
+
+    def start(self):
+        pass
                
     def hide_all_journal(self):
         self.story_tb.hide()
