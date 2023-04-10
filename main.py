@@ -8,7 +8,7 @@ import pygame_widgets
 
 import navigation_bar
 import menu_ui
-
+import gamelogic.network
 import army_ui
 import town_ui
 import journal_ui
@@ -26,10 +26,11 @@ def insert_into_playlist(pl, music_file):
 
 
 class Start:
-    def __init__(self, true):
+    def __init__(self, net):
         pygame.init()
         pygame.mixer.pre_init(44100, -16, 2, 2048)
-        self.is_running = true
+        self.is_running = True
+        self.network = net
         self.window_surface = pygame.display.set_mode((800, 600))
         self.background = pygame.Surface((800, 600))
         self.background.fill(pygame.Color(43, 43, 43))
@@ -38,10 +39,9 @@ class Start:
         icon = pygame.image.load('img/f5.png')
         pygame.display.set_icon(icon)
         self.game = gamelogic.game.Game(self.background)
-        menu = menu_ui.Menu(self.manager, self.background, self.window_surface)
+        menu = menu_ui.Menu(self.manager, self.background, self.window_surface, self.network)
         menu.hide_all_menu()
         del menu
-
         music = ['music/' + g for g in listdir("music") if isfile(join("music", g)) and g.endswith('.mp3' or '.wav')]
         random.shuffle(music)
         self.playlist = music
@@ -52,7 +52,7 @@ class Start:
         pygame.mixer.music.queue(self.playlist[0])
         self.playlist.pop(0)
         pygame.mixer.music.set_volume(gamelogic.config.VOLUME)
-        pygame.mixer.music.set_endevent(pygame.KEYUP)
+        pygame.mixer.music.set_endevent(pygame.K_PAUSE)
 
         self.town = town_ui.Town(self.manager, self.background, self.game, self)
         self.army = army_ui.Army(self.manager, self.background, self.game)
@@ -152,7 +152,7 @@ class Start:
                 self.is_running = False
             for event in pygame.event.get():
 
-                if event.type == pygame.KEYUP:
+                if event.type == pygame.K_PAUSE:
                     if len(self.playlist) > 0:
                         print(self.playlist)
                         pygame.mixer.music.queue(self.playlist[0])
@@ -257,7 +257,8 @@ class Start:
         self.world.hide_all_world()
 
 
+network = gamelogic.network.Network()
 while True:
-    a = Start(True)
+    a = Start(network)
     a.start()
     del a

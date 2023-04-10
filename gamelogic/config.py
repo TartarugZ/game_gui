@@ -501,7 +501,7 @@ def get_autosave():
     autosave = 0
     f = open("save/locals.json", "r")
     save = json.load(f)
-    if save.get('volume'):
+    if save.get('autosave'):
         autosave = save.get('autosave')
     f.close()
     return autosave

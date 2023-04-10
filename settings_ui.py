@@ -27,13 +27,15 @@ class Settings:
                                                                     start_value=self.current_volume * 100,
                                                                     value_range=(0, 100), manager=self.manager)
         self.autosave_slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect((450, 50), (200, 20)),
-                                                                      start_value=self.current_volume * 100,
+                                                                      start_value=self.current_autosave / 60000,
                                                                       value_range=(5, 60), manager=self.manager)
+        print(self.volume_slider.get_current_value())
+        print(self.autosave_slider.get_current_value())
         self.volume_value = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((200, 80), (200, 50)),
-                                                        text=f"Current volume:{int(self.current_volume)}",
+                                                        text=f"Current volume:{int(self.current_volume * 100)}",
                                                         manager=self.manager)
         self.autosave_value = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((450, 80), (200, 50)),
-                                                          text=f"Autosave timing:{int(self.current_autosave)}",
+                                                          text=f"Autosave timing:{int(self.current_autosave / 60000)}",
                                                           manager=self.manager)
 
     def start(self):
@@ -45,6 +47,7 @@ class Settings:
                 save['volume'] = self.volume_slider.get_current_value() / 100
             with open("save/locals.json", "w+") as file:
                 json.dump(save, file)
+
         if self.autosave_slider.has_moved_recently:
             gamelogic.config.AUTOSAVE = self.autosave_slider.get_current_value() * 60000
             self.autosave_value.set_text(f"Autosave timing:{int(self.autosave_slider.get_current_value())}")
