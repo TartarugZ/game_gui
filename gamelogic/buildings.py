@@ -23,21 +23,37 @@ class Building(pygame.sprite.Sprite):
 
         self.resource_create = building_type[RESOURCES_CREATE]
         self.game.buildings_by_name[building_type[NAME]].add(self)
+        
+    def __dict__(self):
+        return {
+            X: self.x // TILESIZE,
+            Y: self.y // TILESIZE,
+            NAME: self.name,
+        }
 
 
 class DynamicBuilding(Building):
-    def __init__(self, game, x, y, building_info):
-        super().__init__(game, x, y, building_info)
+    def __init__(self, game, x, y, building_type, workers=0, tick=pygame.time.get_ticks()):
+        super().__init__(game, x, y, building_type)
 
-        self.remove_extra_sprite(building_info)
+        self.remove_extra_sprite(building_type)
 
-        self.resource_use = building_info[RESOURCES_USE]
-        self.workers = 0
-        self.max_workers = building_info[MAX_WORKERS]
+        self.resource_use = building_type[RESOURCES_USE]
+        self.workers = workers
+        self.max_workers = building_type[MAX_WORKERS]
 
-        self.last_tick = pygame.time.get_ticks()
+        self.last_tick = tick
         self.cooldown = 1000
-
+        
+    def __dict__(self):
+        sup = super().__dict__()
+        sup.update({
+            'workers': self.workers,
+            'tick': self.last_tick // self.cooldown
+        })
+        return sup
+    
+    
     def download(self, w):
         self.workers = w
         self.game.resources[PEOPLE][COUNT] -= w
@@ -88,8 +104,8 @@ class DynamicBuilding(Building):
 
 
 class StaticBuilding(Building):
-    def __init__(self, game, x, y, building_info):
-        super().__init__(game, x, y, building_info)
+    def __init__(self, game, x, y, building_type):
+        super().__init__(game, x, y, building_type)
 
         for res in self.resource_create:
             self.game.resources[res][MAX] += self.resource_create[res]
@@ -97,45 +113,58 @@ class StaticBuilding(Building):
 
 
 class StorageBuilding(Building):
-    def __init__(self, game, x, y, building_info):
-        super().__init__(game, x, y, building_info)
+    def __init__(self, game, x, y, building_type):
+        super().__init__(game, x, y, building_type)
 
         for res in self.resource_create:
             self.game.resources[res][MAX] += self.resource_create[res]
 
 
 class WarBuilding(Building):
-    def __init__(self, game, x, y, building_info):
-        super().__init__(game, x, y, building_info)
+    def __init__(self, game, x, y, building_type, tick=pygame.time.get_ticks()):
+        super().__init__(game, x, y, building_type)
 
-        self.last_tick = pygame.time.get_ticks()
+        self.last_tick = tick
         self.cooldown = 1000
 
         self.needed_soldiers = []
         self.train = 1
 
-        if building_info[NAME] == BARRACKS:
+        if building_type[NAME] == BARRACKS:
             self.army_type = MILITARY
-        elif building_info[NAME] == SHIPYARD:
+        elif building_type[NAME] == SHIPYARD:
             self.army_type = FLEET
 
         for t in self.resource_create:
             self.game.army[t][MAX] += self.resource_create[t]
+    
+    def __dict__(self):
+        sup = super().__dict__()
+        sup.update({
+            'tick': self.last_tick // self.cooldown,
+        })
+        return sup
 
     def update(self):
-        now = pygame.time.get_ticks()
-        if now - self.last_tick >= self.cooldown:
-            self.last_tick = now
-            for solder in self.game.army:
-                if self.game.army[solder][ORDER] > 0 and self.game.army[solder][TYPE] == self.army_type:
-                    if self.game.army[solder][ORDER] - self.train >= 0:
-                        self.game.army[solder][ORDER] -= self.train
-                        self.game.army[solder][COUNT] += self.train
-                    elif self.game.army[solder][ORDER] > 0:
-                        self.game.army[solder][COUNT] += self.game.army[solder][ORDER]
-                        self.game.army[solder][ORDER] -= self.game.army[solder][ORDER]
-                    else:
-                        self.needed_soldiers.remove(solder)
+        if self.game.train:
+            now = pygame.time.get_ticks()
+            if now - self.last_tick >= self.cooldown:
+                self.last_tick = now
+                empty_queue = 0
+                for solder in self.game.army:
+                    if self.game.army[solder][ORDER] == 0:
+                        empty_queue += 1
+                    elif self.game.army[solder][ORDER] > 0 and self.game.army[solder][TYPE] == self.army_type:
+                        if self.game.army[solder][ORDER] - self.train >= 0:
+                            self.game.army[solder][ORDER] -= self.train
+                            self.game.army[solder][COUNT] += self.train
+                        elif self.game.army[solder][ORDER] > 0:
+                            self.game.army[solder][COUNT] += self.game.army[solder][ORDER]
+                            self.game.army[solder][ORDER] -= self.game.army[solder][ORDER]
+                        else:
+                            self.needed_soldiers.remove(solder)
+                if empty_queue == len(self.game.army):
+                    self.game.train = False
 
-    def add_soldiers_to_train(self, soldier):
-        self.needed_soldiers.append(soldier)
+    # def add_soldiers_to_train(self, soldier):
+    #     self.needed_soldiers.append(soldier)

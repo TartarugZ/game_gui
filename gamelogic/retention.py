@@ -5,7 +5,7 @@ import pygame
 from gamelogic.config import *
 
 MAP_INDEX = 'index'
-WORKER = 'worker'
+WORKER = 'workers'
 LAST_TICK = 'last_tick'
 RES = 'res'
 
@@ -30,19 +30,21 @@ class Retention:
         self.file[MAP_INDEX] = len(game.houses)
         j = 0
         for h in game.houses:
-            if BUILDINGS[h.name][TYPE] == DYNAMIC:
-                self.file[MAP_INDEX + str(j)] = {
-                    X: h.x // TILESIZE,
-                    Y: h.y // TILESIZE,
-                    NAME: h.name,
-                    WORKER: h.workers,
-                }
-            else:
-                self.file[MAP_INDEX + str(j)] = {
-                    X: h.x // TILESIZE,
-                    Y: h.y // TILESIZE,
-                    NAME: h.name,
-                }
+            self.file[MAP_INDEX + str(j)] = h.__dict__()
+            # print(h.__dict__())
+            # if BUILDINGS[h.name][TYPE] == DYNAMIC:
+            #     self.file[MAP_INDEX + str(j)] = {
+            #         X: h.x // TILESIZE,
+            #         Y: h.y // TILESIZE,
+            #         NAME: h.name,
+            #         WORKER: h.workers,
+            #     }
+            # else:
+            #     self.file[MAP_INDEX + str(j)] = {
+            #         X: h.x // TILESIZE,
+            #         Y: h.y // TILESIZE,
+            #         NAME: h.name,
+            #     }
             j += 1
         for a in game.army:
             self.file[game.army[a][NAME]] = {
@@ -65,14 +67,19 @@ class Retention:
             try:
                 x = self.file[MAP_INDEX + str(i)][X]
                 y = self.file[MAP_INDEX + str(i)][Y]
-                b = BUILDINGS[self.file[MAP_INDEX + str(i)][NAME]]
-                if b[TYPE] == DYNAMIC:
-                    house = game.put_building(x, y, b)
-                    house.download(
-                        self.file[MAP_INDEX + str(i)][WORKER],
-                    )
+                building = BUILDINGS[self.file[MAP_INDEX + str(i)][NAME]]
+                
+                if building[TYPE] == DYNAMIC:
+                    worker = self.file[MAP_INDEX + str(i)][WORKER]
+                    tick = self.file[MAP_INDEX + str(i)]['tick']
+                    game.put_building(x, y, building, worker, tick)
+                
+                elif building[TYPE] == WAR:
+                    tick = self.file[MAP_INDEX + str(i)]['tick']
+                    game.put_building(x, y, building, worker, tick)
+                
                 else:
-                    game.put_building(x, y, b)
+                    game.put_building(x, y, building)
             except FileNotFoundError and KeyError:
                 pass
         for a in game.army:
