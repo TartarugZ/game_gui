@@ -11,6 +11,20 @@ import settings_ui
 from gamelogic.config import *
 
 
+def get_username():
+    with open("save/locals.json", "r") as file:
+        save = json.load(file)
+        return save['username']
+
+
+def set_username(name):
+    with open("save/locals.json", "r") as file:
+        save = json.load(file)
+        save['username'] = name
+    with open("save/locals.json", "w+") as file:
+        json.dump(save, file)
+
+
 class Menu:
     def __init__(self, manager, background, window_surface, network):
         pygame.init()
@@ -32,7 +46,7 @@ class Menu:
         self.forgot_send = False
         self.code_sent_forgot = False
         self.pg_elem = []
-        self.username = 'Not logged in'
+        self.username = get_username()
         self.image = pygame.image.load('img/menu.png')
 
         pygame.mixer.pre_init(buffer=2048)
@@ -169,6 +183,7 @@ class Menu:
                         self.exception_label.set_text(buff)
                     else:
                         self.username = self.email_field.get_text()
+                        set_username(self.username)
                         self.password_field.set_text('')
                         self.back_to_menu.pressed_event = True
                 elif not self.register.is_enabled and not self.code_sent_reg:
@@ -189,6 +204,7 @@ class Menu:
                         self.exception_label.set_text(buff)
                     else:
                         self.username = self.email_field.get_text()
+                        set_username(self.username)
                         self.back_to_menu.pressed_event = True
                         self.exception_label.set_text('')
                     print("enter reg code")
