@@ -44,8 +44,11 @@ class NavigationBar:
         self.settings = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((400, 550), (200, 50)),
                                                      text='Settings',
                                                      manager=self.manager)
-        self.exit = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((600, 550), (200, 50)),
-                                                 text='Save & Exit',
+        self.save = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((600, 550), (100, 50)),
+                                                 text='Save',
+                                                 manager=self.manager)
+        self.exit = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((700, 550), (100, 50)),
+                                                 text='Menu',
                                                  manager=self.manager)
 
     def hide_all_navigation(self):
@@ -56,6 +59,7 @@ class NavigationBar:
         self.army.hide()
         self.world.hide()
         self.settings.hide()
+        self.save.hide()
         self.exit.hide()
 
     def show_all_navigation(self):
@@ -66,6 +70,7 @@ class NavigationBar:
         self.army.show()
         self.world.show()
         self.settings.show()
+        self.save.show()
         self.exit.show()
 
     def enable_all_navigation(self):
@@ -75,4 +80,5 @@ class NavigationBar:
         self.workers.enable()
         self.army.enable()
         self.world.enable()
+        self.save.enable()
         self.settings.enable()

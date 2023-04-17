@@ -1,6 +1,8 @@
-import random
 from os import listdir
 from os.path import isfile, join
+
+import save_ui
+from gamelogic.network_error import *
 
 import pygame
 import pygame_gui
@@ -28,27 +30,35 @@ def set_username(name):
 class Menu:
     def __init__(self, manager, background, window_surface, network):
         pygame.init()
-        music = ['music/menu/' + g for g in listdir("music/menu") if
-                 isfile(join("music/menu", g)) and g.endswith('.mp3' or '.wav')]
-        self.window_surface = window_surface
-        self.text_needed = True
-        self.is_running = True
         self.manager = manager
-        self.network = network
-        self.playlist = music
-        self.playlist_original = music.copy()
         self.background = background
-        self.buttons = []
-        self.settings = settings_ui.Settings(self.manager, self.background, True)
-        self.settings.hide_all_settings()
-        self.sh_settings = False
+        self.window_surface = window_surface
+        self.network = network
+
+        self.is_running = True
+        self.text_needed = True
+        self.show_settings = False
+        self.show_saves = False
         self.code_sent_reg = False
         self.forgot_send = False
         self.code_sent_forgot = False
-        self.pg_elem = []
+
+        self.buttons = []
+        self.gui_elements = []
+        self.forbidden_characters = []  # TODO
+
+        self.settings = settings_ui.Settings(self.manager, self.background, True)
+        self.save = save_ui.Save(self.manager, self.background, True)
+
+        self.settings.hide_all_settings()
+        self.save.hide_all_save()
         self.username = get_username()
         self.image = pygame.image.load('img/menu.png')
 
+        music = ['music/menu/' + g for g in listdir("music/menu") if
+                 isfile(join("music/menu", g)) and g.endswith('.mp3' or '.wav')]
+        self.playlist = music
+        self.playlist_original = music.copy()
         pygame.mixer.pre_init(buffer=2048)
         pygame.mixer.music.load(self.playlist[0])
         self.playlist.pop(0)
@@ -96,32 +106,23 @@ class Menu:
         self.login_final = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((140, 350), (120, 50)),
                                                         text='Login',
                                                         manager=self.manager)
-        self.save_1 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((150, 180), (100, 50)),
-                                                   text='',
-                                                   manager=self.manager)
-        self.save_2 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((150, 280), (100, 50)),
-                                                   text='',
-                                                   manager=self.manager)
-        self.save_3 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((150, 380), (100, 50)),
-                                                   text='',
-                                                   manager=self.manager)
         self.exception_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 510), (720, 50)),
                                                            text='',
                                                            manager=self.manager)
         self.exception_label.text_horiz_alignment = 'left'
 
         self.password_field.set_text_hidden(True)
+        self.password_field.set_forbidden_characters(forbidden_characters=self.forbidden_characters)
         self.hide_login()
-        self.hide_saves()
         self.code.hide()
         self.forgot_password.hide()
-        self.pg_elem.append(self.new_game_btn)
-        self.pg_elem.append(self.settings_btn)
-        self.pg_elem.append(self.load_game_btn)
-        self.pg_elem.append(self.exit_btn)
-        self.pg_elem.append(self.menu_png)
-        self.pg_elem.append(self.login)
-        self.pg_elem.append(self.register)
+        self.gui_elements.append(self.new_game_btn)
+        self.gui_elements.append(self.settings_btn)
+        self.gui_elements.append(self.load_game_btn)
+        self.gui_elements.append(self.exit_btn)
+        self.gui_elements.append(self.menu_png)
+        self.gui_elements.append(self.login)
+        self.gui_elements.append(self.register)
         clock = pygame.time.Clock()
         while self.is_running:
             pygame.mixer.music.set_volume(gamelogic.config.VOLUME)
@@ -160,78 +161,32 @@ class Menu:
                 self.code.set_text('')
                 self.code.hide()
                 self.exception_label.set_text('')
-                self.hide_saves()
                 self.forgot_password.hide()
                 self.login.enable()
                 self.register.enable()
                 self.hide_login()
                 self.show_all_menu()
-            elif self.load_game_btn.pressed:
-                self.show_saves()
-            elif self.save_1.pressed:
-                pass
-            elif self.save_2.pressed:
-                pass
-            elif self.save_3.pressed:
-                pass
 
             if self.login_final.pressed:
                 if not self.login.is_enabled and not self.forgot_send and not self.code_sent_forgot:
-                    print("login")
-                    buff = self.network.login(self.email_field.get_text(), self.password_field.get_text())
-                    if buff is not None:
-                        self.exception_label.set_text(buff)
-                    else:
-                        self.username = self.email_field.get_text()
-                        set_username(self.username)
-                        self.password_field.set_text('')
-                        self.back_to_menu.pressed_event = True
+                    self.sign_in()
+                    print("Sign In")
                 elif not self.register.is_enabled and not self.code_sent_reg:
-                    print("Register")
-                    self.code.show()
-                    self.login_final.set_text('Send code')
-                    buff = self.network.register(self.email_field.get_text(), self.password_field.get_text())
-                    if buff is not None:
-                        self.exception_label.set_text(buff)
-                    else:
-                        self.email_field.hide()
-                        self.password_field.hide()
-                        self.password_field.set_text('')
-                        self.code_sent_reg = True
+                    self.sign_up()
+                    print("Sign Up")
                 elif self.code_sent_reg:
-                    buff = network.confirm_account(self.code.get_text())
-                    if buff is not None:
-                        self.exception_label.set_text(buff)
-                    else:
-                        self.username = self.email_field.get_text()
-                        set_username(self.username)
-                        self.back_to_menu.pressed_event = True
-                        self.exception_label.set_text('')
-                    print("enter reg code")
+                    self.send_registration_code()
+                    print("Confirm Registration")
                 elif self.forgot_send and not self.code_sent_forgot:
-                    buff = self.network.forgot_password(self.email_field.get_text())
-                    if buff is not None:
-                        self.exception_label.set_text(buff)
-                    else:
-                        self.exception_label.set_text('')
-                        print('send email')
-                        self.login_final.set_text('Send code')
-                        self.code_sent_forgot = True
-                        self.code.show()
-                        self.password_field.show()
+                    self.restore_password()
+                    print('Restore Password')
                 elif self.code_sent_forgot:
-                    buff = self.network.reset_password(self.email_field.get_text(), self.password_field.get_text(),
-                                                       self.code.get_text())
-                    if buff is not None:
-                        self.exception_label.set_text(buff)
-                    else:
-                        self.exception_label.set_text('')
-                        print("enter forgot code")
-                        self.back_to_menu.pressed_event = True
+                    self.confirm_restoring_password()
+                    print("Confirm Restoring Password")
             if self.forgot_password.pressed:
                 self.password_field.hide()
                 self.forgot_password.hide()
-                self.login_final.set_text('Receive code')
+                self.login_final.set_text('Receive Code')
                 self.forgot_send = True
 
             if self.text_needed:
@@ -255,6 +210,7 @@ class Menu:
                         pygame.mixer.music.queue(self.playlist[0])
                         self.playlist.pop(0)
                 if event.type == pygame.QUIT:
+                    set_username('Not logged in')
                     exit()
                 self.manager.process_events(event)
 
@@ -264,15 +220,26 @@ class Menu:
             if self.settings_btn.pressed:
                 self.hide_all_menu()
                 self.settings.show_all_settings()
-                self.sh_settings = True
-            if self.exit_btn.pressed:
-                exit()
+                self.show_settings = True
+            if self.load_game_btn.pressed:
+                self.hide_all_menu()
+                self.save.show_all_save()
+                self.show_saves = True
             if self.settings.back_btn.pressed:
-                self.sh_settings = False
+                self.show_settings = False
                 self.settings.hide_all_settings()
                 self.show_all_menu()
-            if self.sh_settings:
+            if self.save.back_btn.pressed:
+                self.show_saves = False
+                self.save.hide_all_save()
+                self.show_all_menu()
+            if self.show_settings:
                 self.settings.start()
+            if self.show_saves:
+                self.save.start()
+            if self.exit_btn.pressed:
+                set_username('Not logged in')
+                exit()
 
             self.manager.update(time_delta)
             self.window_surface.blit(self.background, (0, 0))
@@ -284,14 +251,14 @@ class Menu:
         self.text_needed = False
         self.hide_login()
         self.exception_label.hide()
-        for element in self.pg_elem:
+        for element in self.gui_elements:
             element.hide()
 
     def show_all_menu(self):
         self.text_needed = True
         self.exception_label.show()
         self.exception_label.set_text('')
-        for element in self.pg_elem:
+        for element in self.gui_elements:
             element.show()
 
     def hide_login(self):
@@ -312,17 +279,64 @@ class Menu:
         self.back_to_menu.show()
         self.login_final.show()
 
-    def show_saves(self):
-        self.new_game_btn.hide()
-        self.settings_btn.hide()
-        self.load_game_btn.hide()
-        self.exit_btn.hide()
-        self.back_to_menu.show()
-        self.save_1.show()
-        self.save_2.show()
-        self.save_3.show()
+    def sign_up(self):
+        try:
+            self.network.register(self.email_field.get_text(), self.password_field.get_text())
+            self.email_field.hide()
+            self.password_field.hide()
+            self.password_field.set_text('')
+            self.code_sent_reg = True
+            self.code.show()
+            self.login_final.set_text('Send code')
+        except (RegistrationError, DbUnavailableError, NotEmailError) as e:
+            self.exception_label.set_text(e.__str__())
+        except Exception:
+            self.exception_label.set_text('Oh my God! Server is down!')
 
-    def hide_saves(self):
-        self.save_1.hide()
-        self.save_2.hide()
-        self.save_3.hide()
+    def send_registration_code(self):
+        try:
+            self.network.confirm_account(self.code.get_text())
+            self.username = self.email_field.get_text()
+            set_username(self.username)
+            self.back_to_menu.pressed_event = True
+            self.exception_label.set_text('')
+        except (WrongCodeError, TokenError) as e:
+            self.exception_label.set_text(e.__str__())
+        except Exception:
+            self.exception_label.set_text('Oh my God! Server is down!')
+
+    def sign_in(self):
+        try:
+            self.network.login(self.email_field.get_text(), self.password_field.get_text())
+            self.username = self.email_field.get_text()
+            set_username(self.username)
+            self.password_field.set_text('')
+            self.back_to_menu.pressed_event = True
+        except (AuthError, WrongEnterError) as e:
+            self.exception_label.set_text(e.__str__())
+        except Exception:
+            self.exception_label.set_text('Oh my God! Server is down!')
+
+    def restore_password(self):
+        try:
+            self.network.forgot_password(self.email_field.get_text())
+            self.exception_label.set_text('')
+            self.login_final.set_text('Send code')
+            self.code_sent_forgot = True
+            self.code.show()
+            self.password_field.show()
+        except NotEmailError as e:
+            self.exception_label.set_text(e.__str__())
+        except Exception:
+            self.exception_label.set_text('Oh my God! Server is down!')
+
+    def confirm_restoring_password(self):
+        try:
+            self.network.reset_password(self.email_field.get_text(), self.password_field.get_text(),
+                                        self.code.get_text())
+            self.exception_label.set_text('')
+            self.back_to_menu.pressed_event = True
+        except (NotEmailError, WrongCodeError) as e:
+            self.exception_label.set_text(e.__str__())
+        except Exception:
+            self.exception_label.set_text('Oh my God! Server is down!')

@@ -10,6 +10,7 @@ import navigation_bar
 import menu_ui
 import gamelogic.network
 import army_ui
+import save_ui
 import town_ui
 import journal_ui
 import storage_ui
@@ -61,6 +62,7 @@ class Start:
         self.storage = storage_ui.Storage(self.manager, self.background, self.game)
         self.workers = workers_ui.Workers(self.manager, self.background, self.game)
         self.world = world_ui.World(self.manager, self.background, self.game)
+        self.save = save_ui.Save(self.manager, self.background, False)
         self.navigation = navigation_bar.NavigationBar(self.manager)
         self.navigation.hide_all_navigation()
         self.hide_all()
@@ -126,6 +128,11 @@ class Start:
                 self.hide_all()
                 self.settings.show_all_settings()
                 self.settings.start()
+            elif not self.navigation.save.is_enabled:
+                self.town.stop_build()
+                self.hide_all()
+                self.save.show_all_save()
+                self.save.start()
             if self.navigation.town.pressed:
                 self.navigation.enable_all_navigation()
                 self.navigation.town.disable()
@@ -147,6 +154,9 @@ class Start:
             elif self.navigation.settings.pressed:
                 self.navigation.enable_all_navigation()
                 self.navigation.settings.disable()
+            elif self.navigation.save.pressed:
+                self.navigation.enable_all_navigation()
+                self.navigation.save.disable()
             elif self.navigation.exit.pressed:
                 self.game.save_data.save(self.game)
                 self.is_running = False
@@ -237,6 +247,7 @@ class Start:
                         self.game.build_building(x, y, BUILDINGS[GOLD_MELT])
                 if event.type == pygame.QUIT:
                     self.game.save_data.save(self.game)
+                    menu_ui.set_username('Not logged in')
                     exit()
 
                 self.manager.process_events(event)
@@ -255,6 +266,7 @@ class Start:
         self.storage.hide_all_storage()
         self.workers.hide_all_workers()
         self.world.hide_all_world()
+        self.save.hide_all_save()
 
 
 network = gamelogic.network.Network()

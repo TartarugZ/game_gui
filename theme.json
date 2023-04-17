@@ -96,7 +96,8 @@
     "#stop": {
         "colours": {
             "normal_bg": "#660000",
-            "hovered_bg" : "#430f02"
+            "hovered_bg" : "#430f02",
+            "disabled_bg": "#4e050b"
         },
         "misc": {
             "text_horiz_alignment": "left"

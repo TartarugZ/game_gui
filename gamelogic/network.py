@@ -10,50 +10,40 @@ class Network:
     refresh_token = None
 
     def register(self, email, password):
-        try:
-            body = {
-                "email": email,
-                "password": password
-            }
-            response = self.session.post(
-                url=f'{self.URL}/register', json=body)
-            if response.status_code == 409:
-                raise RegistrationError(email)
-            elif response.status_code == 503:
-                raise DbUnavailableError
-            elif response.status_code == 422:
-                raise NotEmailError(email)
 
-            self.login(email, password)
-        except (RegistrationError, DbUnavailableError, NotEmailError) as e:
-            return e.__str__()
-        except Exception:
-            return 'Oh my God! Server is down!'
+        body = {
+            "email": email,
+            "password": password
+        }
+        response = self.session.post(
+            url=f'{self.URL}/register', json=body)
+        if response.status_code == 409:
+            raise RegistrationError(email)
+        elif response.status_code == 503:
+            raise DbUnavailableError
+        elif response.status_code == 422:
+            raise NotEmailError(email)
+
+        self.login(email, password)
 
     def login(self, email: str, password: str):
-        try:
-            data = {
-                'username': email,
-                'password': password
-            }
-            response = self.session.post(url=f'{self.URL}/login', data=data)
-            if response.status_code == requests.codes.not_found:
-                raise AuthError
+        data = {
+            'username': email,
+            'password': password
+        }
+        response = self.session.post(url=f'{self.URL}/login', data=data)
+        if response.status_code == requests.codes.not_found:
+            raise AuthError
 
-            if response.status_code == 404:
-                raise AuthError
-            if response.status_code == 422:
-                raise WrongEnterError
-            response = response.json()
-            self.access_token = response.get('access_token')
-            self.refresh_token = response.get('refresh_token')
-            self.session.headers.update(
-                {'Authorization': f'Bearer {self.access_token}'})
-
-        except (AuthError, WrongEnterError) as e:
-            return e.__str__()
-        except Exception:
-            return 'Oh my God! Server is down!'
+        if response.status_code == 404:
+            raise AuthError
+        if response.status_code == 422:
+            raise WrongEnterError
+        response = response.json()
+        self.access_token = response.get('access_token')
+        self.refresh_token = response.get('refresh_token')
+        self.session.headers.update(
+            {'Authorization': f'Bearer {self.access_token}'})
 
     def refresh_tokens(self):
         try:
@@ -71,52 +61,36 @@ class Network:
             print('ERROR refresh token')
 
     def confirm_account(self, code):
-        try:
-            data = {
-                'code': code
-            }
-            response = self.session.post(url=f'{self.URL}/confirm', params=data)
-            if response.status_code == 406:
-                raise WrongCodeError
-            if response.status_code == 401:
-                raise TokenError
-
-        except (WrongCodeError, TokenError) as e:
-            return e.__str__()
-        except Exception:
-            return 'Oh my God! Server is down!'
+        data = {
+            'code': code
+        }
+        response = self.session.post(url=f'{self.URL}/confirm', params=data)
+        if response.status_code == 406:
+            raise WrongCodeError
+        if response.status_code == 401:
+            raise TokenError
 
     def forgot_password(self, email):
-        try:
-            body = {
-                'email': email
-            }
-            response = self.session.post(url=f'{self.URL}/codereset', json=body)
-            if response.status_code == 404:
-                raise NotEmailError
-        except NotEmailError as e:
-            return e.__str__()
-        except Exception:
-            return 'Oh my God! Server is down!'
+        body = {
+            'email': email
+        }
+        response = self.session.post(url=f'{self.URL}/codereset', json=body)
+        if response.status_code == 404:
+            raise NotEmailError
 
     def reset_password(self, email, password, code):
-        try:
-            body = {
-                'email': email,
-                'password': password,
-                'code': code
-            }
-            response = self.session.post(url=f'{self.URL}/reset', json=body)
-            if response.status_code == 404:
-                raise NotEmailError
-            elif response.status_code == 406:
-                raise WrongCodeError
-            self.access_token = None
-            self.refresh_token = None
-        except (NotEmailError, WrongCodeError) as e:
-            return e.__str__()
-        except Exception as e:
-            return 'Oh my God! Server is down!'
+        body = {
+            'email': email,
+            'password': password,
+            'code': code
+        }
+        response = self.session.post(url=f'{self.URL}/reset', json=body)
+        if response.status_code == 404:
+            raise NotEmailError
+        elif response.status_code == 406:
+            raise WrongCodeError
+        self.access_token = None
+        self.refresh_token = None
 
     def get_game_save(self, game_id):
         data = {
