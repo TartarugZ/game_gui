@@ -11,16 +11,16 @@ class Game:
     def __init__(self, screen):
         self.screen = screen
         self.clock = pygame.time.Clock()
-        
+
         self.train = True
-        
+
         self.running = True
 
         self.resources = START_RESOURCES.copy()
         self.army = START_ARMY.copy()
         self.expedition = EXPEDITION.copy()
         self.map = town_map.copy()
-        
+
         self.buildings_by_name = {}
 
         for b in BUILDINGS:
@@ -53,7 +53,6 @@ class Game:
                     mount = terra.Mountain(self, j + FIELD[X], i + FIELD[Y], column)
                     self.town_sprites.add(mount)
                     self.sprites_for_delete.add(mount)
-
 
     def show_place(self, building):
         for i, row in enumerate(self.map):
@@ -144,6 +143,7 @@ class Game:
 
     def train_soldiers(self, count, soldier):
         if self.check_cost_resource(self.army[soldier][COST]):
+            self.train = True
             self.pay_resource(self.army[soldier][COST])
             self.army[soldier][ORDER] += count
 
@@ -166,4 +166,10 @@ class Game:
         if self.check_cost_army(ex[COST]):
             self.pay_army(ex[COST])
             self.get_resource_from_expedition(ex[RESOURCES_CREATE])
-            
+
+    def check_expedition(self, expedition_type):
+        ex = self.expedition[expedition_type]
+        return self.check_cost_army(ex[COST])
+
+    def check_soldiers(self, soldier):
+        return self.check_cost_resource(self.army[soldier][COST])

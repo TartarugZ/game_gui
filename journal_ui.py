@@ -11,6 +11,7 @@ class Journal:
     def __init__(self, manager, background):
         self.manager = manager
         self.background = background
+
         self.story_tb = pygame_gui.elements.UITextBox(relative_rect=pygame.Rect((0, 0), (800, 500)),
                                                       manager=self.manager, html_text="")
         with open('story.txt', encoding='utf-8', mode='r') as f:

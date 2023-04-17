@@ -29,8 +29,6 @@ class Settings:
         self.autosave_slider = pygame_gui.elements.UIHorizontalSlider(relative_rect=pygame.Rect((450, 50), (200, 20)),
                                                                       start_value=self.current_autosave / 60000,
                                                                       value_range=(5, 60), manager=self.manager)
-        print(self.volume_slider.get_current_value())
-        print(self.autosave_slider.get_current_value())
         self.volume_value = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((200, 80), (200, 50)),
                                                         text=f"Current volume:{int(self.current_volume * 100)}",
                                                         manager=self.manager)

@@ -209,6 +209,16 @@ class Menu:
                         self.playlist = self.playlist_original.copy()
                         pygame.mixer.music.queue(self.playlist[0])
                         self.playlist.pop(0)
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_TAB:
+                        if self.email_field.is_focused:
+                            self.email_field.unfocus()
+                            self.password_field.focus()
+                        elif self.password_field.is_focused:
+                            self.email_field.focus()
+                            self.password_field.unfocus()
+                    elif event.key == (pygame.K_RETURN or pygame.K_KP_ENTER):
+                        self.login_final.pressed_event = True
                 if event.type == pygame.QUIT:
                     set_username('Not logged in')
                     exit()

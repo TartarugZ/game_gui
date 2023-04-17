@@ -478,15 +478,6 @@ FIELD = {
     HEIGHT: len(town_map) - 2,
 }
 
-SOLDIERS = {
-        'swordsman': SWORDSMAN,
-        'archer': ARCHER,
-        'priest': PRIEST,
-        'schrooner': SCHROONER,
-        'drakkar': DRAKKAR,
-        'caravelle': CARAVELLE
-    }
-
 
 def get_volume():
     volume = 0
