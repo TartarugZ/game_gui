@@ -2,7 +2,6 @@ import pygame
 import navigation_bar
 import pygame_gui
 from gamelogic.config import *
-import pyautogui as pg
 
 
 class Army:

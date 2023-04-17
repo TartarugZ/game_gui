@@ -2,7 +2,6 @@ import pygame
 import pygame_gui
 import navigation_bar
 from gamelogic.config import *
-import pyautogui as pg
 
 
 class World:

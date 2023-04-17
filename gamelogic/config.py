@@ -3,6 +3,7 @@ import json
 from gamelogic.static_var import *
 from gamelogic.settings import *
 
+print(__name__)
 # Resources
 START_RESOURCES = {
     PEOPLE: {

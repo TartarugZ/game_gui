@@ -1,22 +1,26 @@
 import pygame
-from gamelogic.config import *
 import gamelogic.buildings as buildings
 import gamelogic.terra as terra
 import gamelogic.spritesheet as spritesheet
 import gamelogic.place as place
 from gamelogic.retention import Retention
+from gamelogic.config import *
 
 
 class Game:
     def __init__(self, screen):
         self.screen = screen
         self.clock = pygame.time.Clock()
-
+        
+        self.train = True
+        
         self.running = True
 
-        self.resources = START_RESOURCES
-        self.army = START_ARMY
-        self.expedition = EXPEDITION
+        self.resources = START_RESOURCES.copy()
+        self.army = START_ARMY.copy()
+        self.expedition = EXPEDITION.copy()
+        self.map = town_map.copy()
+        
         self.buildings_by_name = {}
 
         for b in BUILDINGS:
@@ -25,17 +29,18 @@ class Game:
         self.ground_spritesheet = spritesheet.SpriteSheet('img/sprites/ground.png')
         self.buildings_spritesheet = spritesheet.SpriteSheet('img/sprites/buildings.png')
         self.save_data = Retention()
+
+    def new(self):
         self.town_sprites = pygame.sprite.LayeredUpdates()
         self.houses = pygame.sprite.Group()
         self.places = pygame.sprite.Group()
         self.sprites_for_delete = pygame.sprite.Group()
 
-    def new(self):
         self.create_town_map()
         self.save_data.load(self)
 
     def create_town_map(self):
-        for i, row in enumerate(town_map):
+        for i, row in enumerate(self.map):
             for j, column in enumerate(row):
                 if column == 'w':
                     self.town_sprites.add(terra.Water(self, j + FIELD[X], i + FIELD[Y]))
@@ -49,8 +54,9 @@ class Game:
                     self.town_sprites.add(mount)
                     self.sprites_for_delete.add(mount)
 
+
     def show_place(self, building):
-        for i, row in enumerate(town_map):
+        for i, row in enumerate(self.map):
             for j, column in enumerate(row):
                 if column == building[PLACE]:
                     if self.check_building(j + FIELD[X], i + FIELD[Y]):
@@ -72,15 +78,15 @@ class Game:
         except IndexError:
             pass
 
-    def put_building(self, x, y, building_type):
+    def put_building(self, x, y, building_type, workers=0, tick=pygame.time.get_ticks()):
         if building_type[TYPE] == DYNAMIC:
-            new_house = buildings.DynamicBuilding(self, x, y, building_type)
+            new_house = buildings.DynamicBuilding(self, x, y, building_type, workers=workers, tick=tick)
         elif building_type[TYPE] == STATIC:
             new_house = buildings.StaticBuilding(self, x, y, building_type)
         elif building_type[TYPE] == WAREHOUSE:
             new_house = buildings.StorageBuilding(self, x, y, building_type)
         elif building_type[TYPE] == WAR:
-            new_house = buildings.WarBuilding(self, x, y, building_type)
+            new_house = buildings.WarBuilding(self, x, y, building_type, tick=tick)
         else:
             return None
         self.houses.add(new_house)
@@ -131,7 +137,7 @@ class Game:
         self.town_sprites.update()
 
     def draw(self):
-        self.screen.fill((43, 43, 43))
+        # self.screen.fill(BLACK)
         self.town_sprites.draw(self.screen)
         self.clock.tick(FPS)
         pygame.display.update()
@@ -160,10 +166,4 @@ class Game:
         if self.check_cost_army(ex[COST]):
             self.pay_army(ex[COST])
             self.get_resource_from_expedition(ex[RESOURCES_CREATE])
-
-    def check_expedition(self, expedition_type):
-        ex = self.expedition[expedition_type]
-        return self.check_cost_army(ex[COST])
-
-    def check_soldiers(self, soldier):
-        return self.check_cost_resource(self.army[soldier][COST])
+            
