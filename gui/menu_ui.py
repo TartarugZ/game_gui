@@ -38,7 +38,7 @@ class Menu:
 
         self.buttons = []
         self.gui_elements = []
-        self.forbidden_characters = [':', '/', '?', '#', '[', ']', '@', '!', '$', '&', '\'', '(', ')', '*', ';', '=']
+        self.forbidden_characters = [':', '/', '?', '#', '[', ']', '!', '$', '&', '\'', '(', ')', '*', ';', '=']
 
         self.network = gamelogic.network.Network()
         self.music = music_control.Music()
