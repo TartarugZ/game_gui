@@ -38,7 +38,7 @@ class Menu:
 
         self.buttons = []
         self.gui_elements = []
-        self.forbidden_characters = [':', '/', '?', '#', '[', ']', '@', '!', '$', '&', '\'', '(', ')', '*', ';', '=']
+        self.forbidden_characters = [':', ',', '<', '>', '/',  '?', '#', '[', ']', '!', '$', '&', '\'', '(', ')', '*', ';', '=']
 
         self.network = gamelogic.network.Network()
         self.music = music_control.Music()
@@ -270,6 +270,7 @@ class Menu:
             self.code_sent_reg = True
             self.code.show()
             self.login_final.set_text('Send code')
+            self.exception_label.set_text('')
         except (RegistrationError, DbUnavailableError, NotEmailError) as e:
             self.exception_label.set_text(e.__str__())
         except Exception:
@@ -291,6 +292,7 @@ class Menu:
             self.network.login(self.email_field.get_text(), self.password_field.get_text())
             self.username = self.email_field.get_text()
             self.password_field.set_text('')
+            self.exception_label.set_text('')
             self.back_to_menu.pressed_event = True
         except (AuthError, WrongEnterError) as e:
             self.exception_label.set_text(e.__str__())
