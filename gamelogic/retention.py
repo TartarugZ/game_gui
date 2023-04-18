@@ -1,8 +1,10 @@
+import os
 import shelve
 
 import pygame
 
-from gamelogic.config import *
+from gamelogic.static_var import *
+from gamelogic.config import BUILDINGS, get_autosave
 
 MAP_INDEX = 'index'
 WORKER = 'workers'
@@ -12,25 +14,28 @@ RES = 'res'
 
 class Retention:
     def __init__(self):
-        self.file = shelve.open('save/data')
         self.last_tick = pygame.time.get_ticks()
-        self.cooldown = 300000
-
+        
     def check_cooldown(self):
+        cooldown = get_autosave()
         now = pygame.time.get_ticks()
-        if now - self.last_tick >= self.cooldown:
+        if now - self.last_tick >= cooldown:
             self.last_tick = now
             return True
         return False
 
-    def save(self, game):
+    def save(self, game, dir_name='autosave'):
+        if dir_name != 'autosave':
+            os.mkdir(dir_name)
+            
+        file = shelve.open(f'save/{dir_name}/data')
         for r in game.resources:
             if not r == PEOPLE:
-                self.file[RES + r] = game.resources[r][COUNT]
-        self.file[MAP_INDEX] = len(game.houses)
+                file[RES + r] = game.resources[r][COUNT]
+        file[MAP_INDEX] = len(game.houses)
         j = 0
         for h in game.houses:
-            self.file[MAP_INDEX + str(j)] = h.__dict__()
+            file[MAP_INDEX + str(j)] = h.__dict__()
             # print(h.__dict__())
             # if BUILDINGS[h.name][TYPE] == DYNAMIC:
             #     self.file[MAP_INDEX + str(j)] = {
@@ -47,31 +52,32 @@ class Retention:
             #     }
             j += 1
         for a in game.army:
-            self.file[game.army[a][NAME]] = {
+            file[game.army[a][NAME]] = {
                 COUNT: game.army[a][COUNT],
                 ORDER: game.army[a][ORDER]
             }
 
-    def load(self, game):
+    def load(self, game, dir_name):
+        file = shelve.open(f'save/{dir_name}/data')
         for i in game.resources:
             try:
                 game.resources[i][COUNT] = self.file[RES + i]
             except FileNotFoundError and KeyError:
                 pass
         try:
-            index = self.file[MAP_INDEX]
+            index = file[MAP_INDEX]
         except FileNotFoundError and KeyError:
             return
 
         for i in range(index):
             try:
-                x = self.file[MAP_INDEX + str(i)][X]
-                y = self.file[MAP_INDEX + str(i)][Y]
-                building = BUILDINGS[self.file[MAP_INDEX + str(i)][NAME]]
+                x = file[MAP_INDEX + str(i)][X]
+                y = file[MAP_INDEX + str(i)][Y]
+                building = BUILDINGS[file[MAP_INDEX + str(i)][NAME]]
                 
                 if building[TYPE] == DYNAMIC:
-                    worker = self.file[MAP_INDEX + str(i)][WORKER]
-                    tick = self.file[MAP_INDEX + str(i)]['tick']
+                    worker = file[MAP_INDEX + str(i)][WORKER]
+                    tick = file[MAP_INDEX + str(i)]['tick']
                     game.put_building(x, y, building, worker, tick)
                 
                 elif building[TYPE] == WAR:

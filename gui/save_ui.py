@@ -1,3 +1,5 @@
+from os.path import isdir, join
+from os import listdir
 import pygame
 import pygame_gui
 from gui import navigation_bar
@@ -8,7 +10,9 @@ class Save:
         self.manager = manager
         self.background = background
         self.back = back
-
+        
+        self.saves = ['save' + g for g in listdir("save") if isdir(join("save", g))]
+        
         self.text_needed = True
 
         self.cloud_save_1 = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((170, 100), (200, 50)),

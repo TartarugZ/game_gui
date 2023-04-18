@@ -37,8 +37,12 @@ class Game:
         self.sprites_for_delete = pygame.sprite.Group()
 
         self.create_town_map()
-        self.save_data.load(self)
-
+        # self.save_data.load(self)
+        
+    def local_load(self, dir_name):
+        self.new()
+        self.save_data.load(self, dir_name)
+        
     def create_town_map(self):
         for i, row in enumerate(self.map):
             for j, column in enumerate(row):
