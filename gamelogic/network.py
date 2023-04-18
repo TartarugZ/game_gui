@@ -4,7 +4,7 @@ from gamelogic.network_error import *
 
 
 class Network:
-    URL = 'http://localhost:8000'
+    URL = 'http://25.45.70.241:8000'
     session = requests.Session()
     access_token = None
     refresh_token = None
@@ -144,19 +144,3 @@ class Network:
             return response.json()
         except NeedRefreshToken:
             return self.update_tokens(self.get_all_game_info)
-
-    def create_game_save(self, game_id, game_name, army, resources, houses):
-        body = {
-            'game_id': game_id,
-            'game_name': game_name,
-            'army': army,
-            'resources': resources,
-            'houses': houses
-        }
-        try:
-            response = self.session.post(url=f'{self.URL}/game', json=body)
-            if response.status_code == 426:
-                raise NeedRefreshToken
-        except NeedRefreshToken:
-            self.update_tokens(self.create_game_save, game_id=game_id,
-                               game_name=game_name, army=army, resources=resources, houses=houses)

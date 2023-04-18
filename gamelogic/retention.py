@@ -1,5 +1,7 @@
 import os
 import shelve
+import shutil
+from os.path import isdir, join
 
 import pygame
 
@@ -25,8 +27,13 @@ class Retention:
         return False
 
     def save(self, game, dir_name='autosave'):
-        if dir_name != 'autosave':
-            os.mkdir(dir_name)
+        if 'autosave' in dir_name:
+            saves = ['save' + g for g in os.listdir("save") if isdir(join("save", g)) and 'autosave' in g]
+            for i in saves:
+                shutil.rmtree(f'save/{i}')
+
+        if not os.path.isdir(f'save/{dir_name}'):
+            os.mkdir(f'save/{dir_name}')
             
         file = shelve.open(f'save/{dir_name}/data')
         for r in game.resources:
@@ -56,12 +63,13 @@ class Retention:
                 COUNT: game.army[a][COUNT],
                 ORDER: game.army[a][ORDER]
             }
+        file.close()
 
     def load(self, game, dir_name):
         file = shelve.open(f'save/{dir_name}/data')
         for i in game.resources:
             try:
-                game.resources[i][COUNT] = self.file[RES + i]
+                game.resources[i][COUNT] = file[RES + i]
             except FileNotFoundError and KeyError:
                 pass
         try:
@@ -81,7 +89,7 @@ class Retention:
                     game.put_building(x, y, building, worker, tick)
                 
                 elif building[TYPE] == WAR:
-                    tick = self.file[MAP_INDEX + str(i)]['tick']
+                    tick = file[MAP_INDEX + str(i)]['tick']
                     game.put_building(x, y, building, tick)
                 
                 else:
@@ -90,11 +98,11 @@ class Retention:
                 pass
         for a in game.army:
             try:
-                game.army[a][COUNT] = self.file[a][COUNT]
-                game.army[a][ORDER] = self.file[a][ORDER]
+                game.army[a][COUNT] = file[a][COUNT]
+                game.army[a][ORDER] = file[a][ORDER]
             except FileNotFoundError and KeyError:
                 pass
+        file.close()
 
 
-def __del__(self):
-    self.file.close()
+

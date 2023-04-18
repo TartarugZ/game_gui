@@ -1,7 +1,10 @@
+import datetime
+
 import pygame
 import pygame_gui
 import pygame_widgets
 
+import datetime
 from gui import navigation_bar
 from gui import army_ui
 from gui import save_ui
@@ -21,10 +24,12 @@ def insert_into_playlist(pl, music_file):
 
 
 class Start:
-    def __init__(self, net, music):
+    def __init__(self, net, music, game, menu):
         pygame.init()
         self.network = net
         self.music = music
+        self.game = game
+        self.menu = menu
 
         self.is_running = True
 
@@ -36,8 +41,7 @@ class Start:
         icon = pygame.image.load('resources/img/f5.png')
         pygame.display.set_icon(icon)
 
-        self.game = gamelogic.game.Game(self.background)
-
+        self.game.screen = self.background
         self.town = town_ui.Town(self.manager, self.background, self.game)
         self.army = army_ui.Army(self.manager, self.background, self.game)
         self.journal = journal_ui.Journal(self.manager, self.background)
@@ -45,7 +49,7 @@ class Start:
         self.storage = storage_ui.Storage(self.manager, self.background, self.game)
         self.workers = workers_ui.Workers(self.manager, self.background, self.game)
         self.world = world_ui.World(self.manager, self.background, self.game)
-        self.save = save_ui.Save(self.manager, self.background, False)
+        self.save = save_ui.Save(self.manager, self.background, False, self.game, self.menu)
         self.navigation = navigation_bar.NavigationBar(self.manager)
 
         self.navigation.hide_all_navigation()
@@ -61,7 +65,8 @@ class Start:
             pygame.mixer.music.set_volume(gamelogic.config.VOLUME)
             self.music.music_check()
             if self.game.save_data.check_cooldown():
-                self.game.save_data.save(self.game)
+                self.game.save_data.save(self.game,
+                                         'autosave ' + str(datetime.datetime.now().strftime("%Y-%m-%d %Hh %Mm")))
 
             time_delta = self.navigation.clock.tick(FPS) / 1000.0
             if not self.town.details.is_enabled or self.town.details.pressed:
@@ -137,14 +142,12 @@ class Start:
                 self.navigation.enable_all_navigation()
                 self.navigation.save.disable()
             elif self.navigation.exit.pressed:
-                # self.game.save_data.save(self.game)  # TODO save?
                 self.is_running = False
             for event in pygame.event.get():
                 self.music.music_playlist(event=event)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.building(event)
                 if event.type == pygame.QUIT:
-                    # self.game.save_data.save(self.game)
                     exit()
 
                 self.manager.process_events(event)

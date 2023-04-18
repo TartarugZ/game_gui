@@ -12,15 +12,6 @@ class Game:
         self.screen = screen
         self.clock = pygame.time.Clock()
 
-        self.train = True
-
-        self.running = True
-        
-        self.resources = START_RESOURCES.copy()
-        self.army = START_ARMY.copy()
-        self.expedition = EXPEDITION.copy()
-        self.map = town_map.copy()
-
         self.buildings_by_name = {}
 
         for b in BUILDINGS:
@@ -35,6 +26,14 @@ class Game:
         self.houses = pygame.sprite.Group()
         self.places = pygame.sprite.Group()
         self.sprites_for_delete = pygame.sprite.Group()
+        self.train = True
+
+        self.running = True
+
+        self.resources = START_RESOURCES.copy()
+        self.army = START_ARMY.copy()
+        self.expedition = EXPEDITION.copy()
+        self.map = town_map.copy()
 
         self.create_town_map()
         # self.save_data.load(self)
@@ -177,3 +176,4 @@ class Game:
 
     def check_soldiers(self, soldier):
         return self.check_cost_resource(self.army[soldier][COST])
+
