@@ -1,7 +1,6 @@
 import pygame
 import pygame_gui
-import navigation_bar
-import gamelogic.config
+from gui import navigation_bar
 
 
 class Save:

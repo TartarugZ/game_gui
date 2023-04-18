@@ -26,8 +26,8 @@ class Game:
         for b in BUILDINGS:
             self.buildings_by_name[b] = pygame.sprite.Group()
 
-        self.ground_spritesheet = spritesheet.SpriteSheet('img/sprites/ground.png')
-        self.buildings_spritesheet = spritesheet.SpriteSheet('img/sprites/buildings.png')
+        self.ground_spritesheet = spritesheet.SpriteSheet('resources/img/sprites/ground.png')
+        self.buildings_spritesheet = spritesheet.SpriteSheet('resources/img/sprites/buildings.png')
         self.save_data = Retention()
 
     def new(self):
