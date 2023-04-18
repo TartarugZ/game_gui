@@ -2,7 +2,7 @@ import pygame
 import pygame_gui
 
 from gui import navigation_bar
-from gamelogic.config import *
+from gamelogic.static_var import *
 
 
 class Army:

@@ -76,7 +76,7 @@ class Retention:
                 
                 elif building[TYPE] == WAR:
                     tick = self.file[MAP_INDEX + str(i)]['tick']
-                    game.put_building(x, y, building, worker, tick)
+                    game.put_building(x, y, building, tick)
                 
                 else:
                     game.put_building(x, y, building)

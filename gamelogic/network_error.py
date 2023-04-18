@@ -61,3 +61,10 @@ class WrongEnterError(Exception):
     def __str__(self):
         return f'Wrong input :( Please, check and try again'
 
+
+class NeedRefreshToken(Exception):
+    def __init__(self):
+        pass
+    
+    def __str__(self):
+        return f'Need refresh token'

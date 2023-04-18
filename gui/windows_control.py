@@ -137,14 +137,14 @@ class Start:
                 self.navigation.enable_all_navigation()
                 self.navigation.save.disable()
             elif self.navigation.exit.pressed:
-                self.game.save_data.save(self.game)  # TODO save?
+                # self.game.save_data.save(self.game)  # TODO save?
                 self.is_running = False
             for event in pygame.event.get():
                 self.music.music_playlist(event=event)
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.building(event)
                 if event.type == pygame.QUIT:
-                    self.game.save_data.save(self.game)
+                    # self.game.save_data.save(self.game)
                     exit()
 
                 self.manager.process_events(event)

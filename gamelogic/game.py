@@ -15,7 +15,7 @@ class Game:
         self.train = True
 
         self.running = True
-
+        
         self.resources = START_RESOURCES.copy()
         self.army = START_ARMY.copy()
         self.expedition = EXPEDITION.copy()

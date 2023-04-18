@@ -77,8 +77,9 @@ START_ARMY = {
         MAX: 10,
         ORDER: 0,
         COST: {
-            GOLD: 10000,
-            IRON: 40
+            GOLD: 1,
+            IRON: 1,
+            STONE: 2,
         }
     },
     ARCHER: {
@@ -88,7 +89,7 @@ START_ARMY = {
         MAX: 10,
         ORDER: 0,
         COST: {
-            STONE: 1000
+            STONE: 0
         }
     },
     PRIEST: {
