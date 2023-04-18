@@ -10,8 +10,8 @@ class Music:
     def __init__(self):
         pygame.init()
         pygame.mixer.pre_init(44100, -16, 2, 2048)
-        music = ['./resources/music/' + g for g in listdir("./resources/music") if
-                 isfile(join("./resources/music", g)) and g.endswith('.mp3' or '.wav')]
+        music = ['resources/music/' + g for g in listdir("resources/music") if
+                 isfile(join("resources/music", g)) and g.endswith('.mp3' or '.wav')]
         random.shuffle(music)
         self.playlist = music
         self.playlist_original = music.copy()
