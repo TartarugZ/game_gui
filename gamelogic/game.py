@@ -10,8 +10,6 @@ class Game:
     def __init__(self, screen):
         self.screen = screen
         self.clock = pygame.time.Clock()
-        
-        self.new()
 
         self.buildings_by_name = {}
 
@@ -21,6 +19,8 @@ class Game:
         self.ground_spritesheet = spritesheet.SpriteSheet('resources/img/sprites/ground.png')
         self.buildings_spritesheet = spritesheet.SpriteSheet('resources/img/sprites/buildings.png')
         self.save_data = Retention()
+        
+        self.new()
 
     def new(self):
         self.train = True
@@ -36,14 +36,6 @@ class Game:
         self.houses = pygame.sprite.Group()
         self.places = pygame.sprite.Group()
         self.sprites_for_delete = pygame.sprite.Group()
-        self.train = True
-
-        self.running = True
-
-        self.resources = START_RESOURCES.copy()
-        self.army = START_ARMY.copy()
-        self.expedition = EXPEDITION.copy()
-        self.map = town_map.copy()
 
         self.create_town_map()
         # self.save_data.load(self)
