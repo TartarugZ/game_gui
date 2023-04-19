@@ -92,6 +92,10 @@ class Army:
             navigation_bar.draw_text(self.background,
                                      f'You have {self.caravelle_number}', 22, 592, 360)
 
+            for i in self.all_army:
+                navigation_bar.draw_text_left(text='Queue: ' + str(self.game.army[i.text.lower()][ORDER]), size=20,
+                                              x=i.rect[0] + 120, y=i.rect[1] + 15, surf=self.background)
+
         self.show_army_cost()
         self.draw_table()
         self.resources_check()

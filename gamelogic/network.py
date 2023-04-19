@@ -9,6 +9,9 @@ class Network:
     access_token = None
     refresh_token = None
 
+    def ping_server(self):
+        response = self.session.get(url=f'{self.URL}')
+
     def update_tokens(self, callback, **args):
         try:
             self.session.headers.update(

@@ -121,6 +121,10 @@ class Save:
                 self.menu.load_server(3)
                 self.back_btn.pressed_event = True
                 self.menu.start_game()
+            elif self.autosave.pressed:
+                self.game.local_load(self.autosave.text)
+                self.back_btn.pressed_event = True
+                self.menu.start_game()
         else:  # save
             if self.local_save_1.pressed:
                 self.game.local_save('save_1')

@@ -14,7 +14,6 @@ import gamelogic.config
 import gamelogic.game
 
 
-#  TODO ui restrictions when sending information, autosave button load save, show army queue, check server down
 class Menu:
     def __init__(self):
         pygame.init()
@@ -34,10 +33,11 @@ class Menu:
         self.code_sent_reg = False
         self.forgot_send = False
         self.code_sent_forgot = False
+        self.server_is_available = True
 
         self.buttons = []
         self.gui_elements = []
-        self.forbidden_characters = [':', '/', '?', '#', '[', ']', '!', '$', '&', '\'', '(', ')', '*', ';', '=']
+        self.forbidden_characters = [':', '/', '?', '#', '[', ']', '!', '$', '&', '\'', '(', ')', '*', ';', '=', ' ']
 
         self.network = gamelogic.network.Network()
         self.music = music_control.Music()
@@ -88,6 +88,11 @@ class Menu:
         self.login_final = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((140, 350), (120, 50)),
                                                         text='Login',
                                                         manager=self.manager)
+        self.update_connection = pygame_gui.elements.UIButton(relative_rect=pygame.Rect((770, 530), (20, 20)),
+                                                              text='o',
+                                                              manager=self.manager)
+
+        self.update_connection.text_horiz_alignment = 'left'
         self.exception_label = pygame_gui.elements.UILabel(relative_rect=pygame.Rect((0, 510), (720, 50)),
                                                            text='',
                                                            manager=self.manager)
@@ -106,7 +111,12 @@ class Menu:
         self.gui_elements.append(self.menu_png)
         self.gui_elements.append(self.login)
         self.gui_elements.append(self.register)
+        self.gui_elements.append(self.update_connection)
         self.clock = pygame.time.Clock()
+        navigation_bar.draw_text(self.background, "Loading...", 40, 400, 280)
+        self.window_surface.blit(self.background, (0, 0))
+        pygame.display.update()
+        self.check_server()
 
     def start(self):
         while self.is_running:
@@ -174,9 +184,20 @@ class Menu:
                 self.login_final.set_text('Receive Code')
                 self.forgot_send = True
 
+            if self.update_connection.pressed:
+                self.check_server()
+
             if self.text_needed:
                 navigation_bar.draw_text(self.background, "Welcome to the <BUILD ON FIELD>", 40, 400, 30)
                 navigation_bar.draw_text(self.background, f'{self.username}', 20, 450, 565)
+                navigation_bar.draw_text_left(self.background, 'Server', 15, 715, 530)
+                if self.server_is_available:
+                    pygame.draw.circle(self.background, (74, 232, 16),
+                                       (765, 540), 5)
+                else:
+
+                    pygame.draw.circle(self.background, (232, 17, 35),
+                                       (765, 540), 5)
 
             for event in pygame.event.get():
                 self.music.music_playlist(event=event)
@@ -259,72 +280,141 @@ class Menu:
         self.login_final.show()
 
     def sign_up(self):
-        try:
-            self.network.register(self.email_field.get_text(), self.password_field.get_text())
-            self.email_field.hide()
-            self.password_field.hide()
-            self.password_field.set_text('')
-            self.code_sent_reg = True
-            self.code.show()
-            self.login_final.set_text('Send code')
-            self.exception_label.set_text('')
-        except (RegistrationError, DbUnavailableError, NotEmailError) as e:
-            self.exception_label.set_text(e.__str__())
-        except Exception:
-            self.exception_label.set_text('Oh my God! Server is down!')
+        if self.server_is_available:
+            if self.check_empty_enter(2):
+                try:
+                    self.network.register(self.email_field.get_text(), self.password_field.get_text())
+                    self.email_field.hide()
+                    self.password_field.hide()
+                    self.password_field.set_text('')
+                    self.code_sent_reg = True
+                    self.code.show()
+                    self.login_final.set_text('Send code')
+                    self.exception_label.set_text('')
+                except (RegistrationError, DbUnavailableError, NotEmailError) as e:
+                    self.exception_label.set_text(e.__str__())
+                except Exception:
+                    self.server_is_available = False
+                    self.exception_label.set_text('Oh my God! Server is down! Try to connect later :(')
+            else:
+                self.exception_label.set_text('You send empty fields! Please, check your information! ;)')
 
     def send_registration_code(self):
-        try:
-            self.network.confirm_account(self.code.get_text())
-            self.username = self.email_field.get_text()
-            self.back_to_menu.pressed_event = True
-            self.exception_label.set_text('')
-        except (WrongCodeError, TokenError) as e:
-            self.exception_label.set_text(e.__str__())
-        except Exception:
-            self.exception_label.set_text('Oh my God! Server is down!')
+        if self.server_is_available:
+            if self.check_empty_enter(4):
+                try:
+                    self.network.confirm_account(self.code.get_text())
+                    self.username = self.email_field.get_text()
+                    self.back_to_menu.pressed_event = True
+                    self.exception_label.set_text('')
+                except (WrongCodeError, TokenError) as e:
+                    self.exception_label.set_text(e.__str__())
+                except Exception:
+                    self.server_is_available = False
+                    self.exception_label.set_text('Oh my God! Server is down!')
+            else:
+                if 0 < len(self.code.get_text()) < 7:
+                    self.exception_label.set_text('Code can not be less than 7 characters! Please, check it ;)')
+                else:
+                    self.exception_label.set_text('You send empty fields! Please, check your information! ;)')
 
     def sign_in(self):
-        try:
-            self.network.login(self.email_field.get_text(), self.password_field.get_text())
-            self.username = self.email_field.get_text()
-            self.password_field.set_text('')
-            self.exception_label.set_text('')
-            self.back_to_menu.pressed_event = True
-        except (AuthError, WrongEnterError) as e:
-            self.exception_label.set_text(e.__str__())
-        except Exception:
-            self.exception_label.set_text('Oh my God! Server is down!')
+        if self.server_is_available:
+            if self.check_empty_enter(2):
+                try:
+                    self.network.login(self.email_field.get_text(), self.password_field.get_text())
+                    self.username = self.email_field.get_text()
+                    self.password_field.set_text('')
+                    self.exception_label.set_text('')
+                    self.back_to_menu.pressed_event = True
+                except (AuthError, WrongEnterError) as e:
+                    self.exception_label.set_text(e.__str__())
+                except Exception:
+                    self.server_is_available = False
+                    self.exception_label.set_text('Oh my God! Server is down!')
+            else:
+                self.exception_label.set_text('You send empty fields! Please, check your information! ;)')
 
     def restore_password(self):
-        try:
-            self.network.forgot_password(self.email_field.get_text())
-            self.exception_label.set_text('')
-            self.login_final.set_text('Send code')
-            self.code_sent_forgot = True
-            self.code.show()
-            self.password_field.show()
-        except NotEmailError as e:
-            self.exception_label.set_text(e.__str__())
-        except Exception:
-            self.exception_label.set_text('Oh my God! Server is down!')
+        if self.server_is_available:
+            if self.check_empty_enter(1):
+                try:
+                    self.network.forgot_password(self.email_field.get_text())
+                    self.exception_label.set_text('')
+                    self.login_final.set_text('Send code')
+                    self.code_sent_forgot = True
+                    self.code.show()
+                    self.password_field.show()
+                except NotEmailError as e:
+                    self.exception_label.set_text(e.__str__())
+                except Exception:
+                    self.server_is_available = False
+                    self.exception_label.set_text('Oh my God! Server is down!')
+            else:
+                self.exception_label.set_text('You send empty fields! Please, check your information! ;)')
 
     def confirm_restoring_password(self):
-        try:
-            self.network.reset_password(self.email_field.get_text(), self.password_field.get_text(),
-                                        self.code.get_text())
-            self.exception_label.set_text('')
-            self.back_to_menu.pressed_event = True
-        except (NotEmailError, WrongCodeError) as e:
-            self.exception_label.set_text(e.__str__())
-        except Exception:
-            self.exception_label.set_text('Oh my God! Server is down!')
+        if self.server_is_available:
+            if self.check_empty_enter(3):
+                try:
+                    self.network.reset_password(self.email_field.get_text(), self.password_field.get_text(),
+                                                self.code.get_text())
+                    self.exception_label.set_text('')
+                    self.back_to_menu.pressed_event = True
+                except (NotEmailError, WrongCodeError) as e:
+                    self.exception_label.set_text(e.__str__())
+                except Exception:
+                    self.server_is_available = False
+                    self.exception_label.set_text('Oh my God! Server is down!')
+            else:
+                if 0 < len(self.code.get_text()) < 7:
+                    self.exception_label.set_text('Code can not be less than 7 characters! Please, check it ;)')
+                else:
+                    self.exception_label.set_text('You send empty fields! Please, check your information! ;)')
 
     def load_server_saves(self):
-        try:
-            return self.network.get_all_game_info()
-        except Exception:
-            pass
+        if self.server_is_available:
+            try:
+                return self.network.get_all_game_info()
+            except Exception:
+                self.server_is_available = False
+
+    def save_server(self, num, name):
+        if self.server_is_available:
+            try:
+                data = self.game.server_save_data()
+                self.network.update_game_save(num, data[0], data[1], data[2], name)
+            except Exception:
+                self.server_is_available = False
+
+    def load_server(self, num):
+        if self.server_is_available:
+            try:
+                data = self.network.get_game_save(num)
+                self.game.server_load(data[0], data[1], data[2])
+            except Exception:
+                self.server_is_available = False
+
+    def check_empty_enter(self, num):
+        if num == 1:
+            if self.email_field.get_text() == '':
+                return False
+        elif num == 2:
+            if self.email_field.get_text() == '':
+                return False
+            elif self.password_field.get_text() == '':
+                return False
+        elif num == 3:
+            if self.email_field.get_text() == '':
+                return False
+            elif self.password_field.get_text() == '':
+                return False
+            elif self.code.get_text() == '':
+                return False
+        elif num == 4:
+            if self.code.get_text() == '':
+                return False
+        return True
 
     def start_game(self):
         a = windows_control.Start(self.network, self.music, self.game, self, self.background, self.window_surface,
@@ -336,16 +426,8 @@ class Menu:
         del a
         self.show_all_menu()
 
-    def save_server(self, num, name):
+    def check_server(self):
         try:
-            data = self.game.server_save_data()
-            self.network.update_game_save(num, data[0], data[1], data[2], name)
+            self.network.ping_server()
         except Exception:
-            pass
-
-    def load_server(self, num):
-        try:
-            data = self.network.get_game_save(num)
-            self.game.server_load(data[0], data[1], data[2])
-        except Exception:
-            pass
+            self.server_is_available = False
