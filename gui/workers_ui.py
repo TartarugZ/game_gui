@@ -163,15 +163,15 @@ class Workers:
     def start(self):
         self.worker_check()
         self.population = self.game.resources[PEOPLE][COUNT]
-        a = 0
-        for button in self.buttons:
-            if button.held:
-                self.count = self.count + 1
-                a = 0
-            else:
-                a += 1
-                if a == 30:
-                    self.count = 0
+        # a = 0
+        # for button in self.buttons:
+        #     if button.held:
+        #         self.count = self.count + 1
+        #         a = 0
+        #     else:
+        #         a += 1
+        #         if a == 30:
+        #             self.count = 0
         unemployed_people = self.population
 
         self.background.fill(pygame.Color(43, 43, 43))

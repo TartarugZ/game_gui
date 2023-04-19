@@ -101,12 +101,10 @@ class Army:
                 if element < 3:
                     self.all_army[element].enable()
             if self.distance.pressed:
-                print('ar')
                 print(self.game.army[ARCHER][COUNT])
                 self.game.train_soldiers(1, ARCHER)
                 print(self.game.army[ARCHER][COUNT])
             if self.melee.pressed:
-                print('sw')
                 self.game.train_soldiers(1, SWORDSMAN)
             if self.heal.pressed:
                 self.game.train_soldiers(1, PRIEST)

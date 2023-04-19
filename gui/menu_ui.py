@@ -11,21 +11,20 @@ from gui import music_control
 from gamelogic.network import Network
 from gamelogic.network_error import *
 import gamelogic.config
+import gamelogic.game
 
 
+#  TODO ui restrictions when sending information, autosave button load save
 class Menu:
     def __init__(self):
         pygame.init()
-        print(str(Path(Path.cwd(), 'resources', 'theme.json')))
         self.window_surface = pygame.display.set_mode((800, 600))
         self.background = pygame.Surface((800, 600))
         self.background.fill(pygame.Color(43, 43, 43))
         pygame.display.set_caption("Build on Field")
         self.manager = pygame_gui.UIManager(pygame.display.get_window_size(),
                                             str(Path(Path.cwd(), 'resources', 'theme.json')))
-        print("yes")
         icon = pygame.image.load(os.path.abspath(os.curdir) + '/resources/img/f5.png')
-        print("yes")
         pygame.display.set_icon(icon)
 
         self.is_running = True
@@ -42,8 +41,9 @@ class Menu:
 
         self.network = gamelogic.network.Network()
         self.music = music_control.Music()
+        self.game = gamelogic.game.Game(self.background)
         self.settings = settings_ui.Settings(self.manager, self.background, True)
-        self.save = save_ui.Save(self.manager, self.background, True)
+        self.save = save_ui.Save(self.manager, self.background, True, self.game, menu=self)
 
         self.settings.hide_all_settings()
         self.save.hide_all_save()
@@ -195,11 +195,8 @@ class Menu:
                 self.manager.process_events(event)
 
             if self.new_game_btn.pressed:
-                a = windows_control.Start(self.network, self.music)
-                self.hide_all_menu()
-                a.start()
-                del a
-                self.show_all_menu()
+                self.game.new()
+                self.start_game()
             if self.settings_btn.pressed:
                 self.hide_all_menu()
                 self.settings.show_all_settings()
@@ -322,3 +319,16 @@ class Menu:
             self.exception_label.set_text(e.__str__())
         except Exception:
             self.exception_label.set_text('Oh my God! Server is down!')
+
+    def load_server_saves(self):
+        try:
+            return self.network.get_all_game_info()
+        except Exception:
+            pass
+
+    def start_game(self):
+        a = windows_control.Start(self.network, self.music, self.game, self)
+        self.hide_all_menu()
+        a.start()
+        del a
+        self.show_all_menu()
