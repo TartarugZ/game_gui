@@ -54,9 +54,9 @@ class DynamicBuilding(Building):
         return sup
     
     
-    def download(self, w):
-        self.workers = w
-        self.game.resources[PEOPLE][COUNT] -= w
+    # def download(self, w):
+    #     self.workers = w
+    #     self.game.resources[PEOPLE][COUNT] -= w
 
     def add_worker(self):
         if self.workers < self.max_workers and self.game.resources[PEOPLE][COUNT] > 0:

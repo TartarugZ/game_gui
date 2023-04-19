@@ -6,22 +6,12 @@ import gamelogic.place as place
 from gamelogic.retention import Retention
 from gamelogic.config import *
 
-
 class Game:
     def __init__(self, screen):
         self.screen = screen
         self.clock = pygame.time.Clock()
-
-        self.train = True
-
-        self.running = True
         
-        self.resources = START_RESOURCES.copy()
-        self.army = START_ARMY.copy()
-        self.expedition = EXPEDITION.copy()
-        self.map = town_map.copy()
-
-        self.buildings_by_name = {}
+        self.new()
 
         for b in BUILDINGS:
             self.buildings_by_name[b] = pygame.sprite.Group()
@@ -31,6 +21,15 @@ class Game:
         self.save_data = Retention()
 
     def new(self):
+        self.train = True
+
+        self.running = True
+        
+        self.resources = START_RESOURCES.copy()
+        self.army = START_ARMY.copy()
+        self.expedition = EXPEDITION.copy()
+        self.map = town_map.copy()
+        
         self.town_sprites = pygame.sprite.LayeredUpdates()
         self.houses = pygame.sprite.Group()
         self.places = pygame.sprite.Group()
@@ -38,10 +37,64 @@ class Game:
 
         self.create_town_map()
         # self.save_data.load(self)
+    
+    def local_save(self, dir_name):
+        self.save_data.save(self, dir_name)
         
     def local_load(self, dir_name):
         self.new()
         self.save_data.load(self, dir_name)
+    
+    def server_save_data(self):
+        save_res = {}
+        save_houses = []
+        save_army = {}
+        for r in self.resources:
+            if not r == PEOPLE:
+                save_res.update({r: self.resources[r][COUNT]})
+        
+        for h in self.houses:
+            save_houses.append(h.__dict__())
+            
+        for a in self.army:
+            save_army.update({
+                a: {
+                    COUNT: self.army[a][COUNT],
+                    ORDER: self.army[a][ORDER]
+                }
+            })
+        return save_army, save_res, save_houses
+    
+    def server_load(self, save_army, save_resources, save_houses):
+        self.new()
+        for res in save_resources:
+            self.resources[res][COUNT] = save_resources[res]
+            
+        for house in save_houses:
+            x = house[X]
+            y = house[Y]
+            building = BUILDINGS[house[NAME]]
+            
+            if building[TYPE] == DYNAMIC:
+                worker = house['workers']
+                tick = house['tick']
+                self.put_building(x, y, building, worker, tick)
+                
+            elif building[TYPE] == WAR:
+                tick = house['tick']
+                self.put_building(x, y, building, tick)
+                
+            else:
+                self.put_building(x, y, building)
+        
+        for arm in save_army:
+            self.army[arm][COUNT] = save_army[arm][COUNT]
+            self.army[arm][ORDER] = save_army[arm][ORDER]            
+            
+    
+    # def server_load(self, army, resources, houses):
+    #     self.new()
+        
         
     def create_town_map(self):
         for i, row in enumerate(self.map):
@@ -83,6 +136,7 @@ class Game:
 
     def put_building(self, x, y, building_type, workers=0, tick=pygame.time.get_ticks()):
         if building_type[TYPE] == DYNAMIC:
+            self.resources[PEOPLE][COUNT] -= workers
             new_house = buildings.DynamicBuilding(self, x, y, building_type, workers=workers, tick=tick)
         elif building_type[TYPE] == STATIC:
             new_house = buildings.StaticBuilding(self, x, y, building_type)

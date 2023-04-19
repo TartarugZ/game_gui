@@ -1,6 +1,7 @@
-import os
+from os.path import isdir, join
+from os import mkdir, listdir
 import shelve
-
+import shutil
 import pygame
 
 from gamelogic.static_var import *
@@ -24,9 +25,14 @@ class Retention:
             return True
         return False
 
-    def save(self, game, dir_name='autosave'):
-        if dir_name != 'autosave':
-            os.mkdir(dir_name)
+    def save(self, game, dir_name):
+        if 'autosave' in dir_name:
+            saves = ['save' + g for g in listdir("save") if isdir(join("save", g)) and 'autosave' in g]
+            for i in saves:
+                shutil.rmtree(f'save/{i}')
+        
+        if not isdir(f'save/{dir_name}'):
+            mkdir(f'save/{dir_name}')
             
         file = shelve.open(f'save/{dir_name}/data')
         for r in game.resources:
