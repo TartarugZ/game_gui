@@ -5,16 +5,13 @@ import gamelogic.spritesheet as spritesheet
 import gamelogic.place as place
 from gamelogic.retention import Retention
 from gamelogic.config import *
+import copy
 
 class Game:
     def __init__(self, screen):
         self.screen = screen
         self.clock = pygame.time.Clock()
 
-        self.buildings_by_name = {}
-
-        for b in BUILDINGS:
-            self.buildings_by_name[b] = pygame.sprite.Group()
 
         self.ground_spritesheet = spritesheet.SpriteSheet('resources/img/sprites/ground.png')
         self.buildings_spritesheet = spritesheet.SpriteSheet('resources/img/sprites/buildings.png')
@@ -26,11 +23,16 @@ class Game:
         self.train = True
 
         self.running = True
+
+        self.buildings_by_name = {}
+
+        for b in BUILDINGS:
+            self.buildings_by_name[b] = pygame.sprite.Group()
         
-        self.resources = START_RESOURCES.copy()
-        self.army = START_ARMY.copy()
-        self.expedition = EXPEDITION.copy()
-        self.map = town_map.copy()
+        self.resources = copy.deepcopy(START_RESOURCES)
+        self.army = copy.deepcopy(START_ARMY)
+        self.expedition = copy.deepcopy(EXPEDITION)
+        self.map = copy.deepcopy(town_map)
         
         self.town_sprites = pygame.sprite.LayeredUpdates()
         self.houses = pygame.sprite.Group()

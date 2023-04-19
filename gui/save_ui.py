@@ -1,3 +1,4 @@
+import datetime
 import time
 from os.path import isdir, join
 from os import listdir
@@ -109,30 +110,30 @@ class Save:
                 self.back_btn.pressed_event = True
                 self.menu.start_game()
             elif self.cloud_save_1.pressed:
-                self.game.local_load(self.menu.network.get_game_save(1))
+                self.menu.load_server(1)
                 self.back_btn.pressed_event = True
                 self.menu.start_game()
             elif self.cloud_save_2.pressed:
-                self.game.local_load(self.menu.network.get_game_save(2))
+                self.menu.load_server(2)
                 self.back_btn.pressed_event = True
                 self.menu.start_game()
             elif self.cloud_save_3.pressed:
-                self.game.local_load(self.menu.network.get_game_save(3))
+                self.menu.load_server(3)
                 self.back_btn.pressed_event = True
                 self.menu.start_game()
         else:  # save
             if self.local_save_1.pressed:
-                self.game.save_data.save(self.game, 'save_1')
+                self.game.local_save('save_1')
             elif self.local_save_2.pressed:
-                self.game.save_data.save(self.game, 'save_2')
+                self.game.local_save('save_2')
             elif self.local_save_3.pressed:
-                self.game.save_data.save(self.game, 'save_3')
+                self.game.local_save('save_3')
             elif self.cloud_save_1.pressed:
-                self.menu.network.update_game_save(1, self.game.army, self.game.resources, gamelogic.config.BUILDINGS)
+                self.menu.save_server(1, 'save_1' + str(datetime.datetime.now().strftime("%Y-%m-%d %Hh %Mm")))
             elif self.cloud_save_2.pressed:
-                self.menu.network.update_game_save(2, self.game.army, self.game.resources, gamelogic.config.BUILDINGS)
+                self.menu.save_server(2, 'save_2' + str(datetime.datetime.now().strftime("%Y-%m-%d %Hh %Mm")))
             elif self.cloud_save_3.pressed:
-                self.menu.network.update_game_save(3, self.game.army, self.game.resources, gamelogic.config.BUILDINGS)
+                self.menu.save_server(3, 'save_3' + str(datetime.datetime.now().strftime("%Y-%m-%d %Hh %Mm")))
 
     def hide_all_save(self):
         self.background.fill(pygame.Color(43, 43, 43))

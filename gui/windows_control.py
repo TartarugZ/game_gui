@@ -1,4 +1,5 @@
 import datetime
+import os
 
 import pygame
 import pygame_gui
@@ -38,7 +39,7 @@ class Start:
         self.background.fill(pygame.Color(43, 43, 43))
         pygame.display.set_caption("Build on field")
         self.manager = pygame_gui.UIManager(pygame.display.get_window_size(), 'resources/theme.json')
-        icon = pygame.image.load('resources/img/f5.png')
+        icon = pygame.image.load(os.path.abspath(os.curdir) + '/resources/img/f5.png')
         pygame.display.set_icon(icon)
 
         self.game.screen = self.background
@@ -59,7 +60,6 @@ class Start:
         self.navigation.show_all_navigation()
         self.town.show_side_buttons()
         self.navigation.town.disable()
-        self.game.new()
 
         while self.is_running:
             pygame.mixer.music.set_volume(gamelogic.config.VOLUME)

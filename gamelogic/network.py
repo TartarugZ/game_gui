@@ -102,11 +102,8 @@ class Network:
         self.refresh_token = None
 
     def get_game_save(self, game_id):
-        data = {
-            'game_id': game_id
-        }
         try:
-            response = self.session.post(url=f'{self.URL}/reset', data=data)
+            response = self.session.get(url=f'{self.URL}/game/{game_id}')
 
             if response.status_code == 426:
                 raise NeedRefreshToken
@@ -121,8 +118,9 @@ class Network:
         except NeedRefreshToken:
             return self.update_tokens(self.get_game_save, game_id=game_id)
 
-    def update_game_save(self, game_id, army, resources, houses):
+    def update_game_save(self, game_id, army, resources, houses, game_name):
         body = {
+            'game_name': game_name,
             'army': army,
             'resources': resources,
             'houses': houses

@@ -14,7 +14,7 @@ import gamelogic.config
 import gamelogic.game
 
 
-#  TODO ui restrictions when sending information, autosave button load save
+#  TODO ui restrictions when sending information, autosave button load save, show army queue, check server down
 class Menu:
     def __init__(self):
         pygame.init()
@@ -332,3 +332,18 @@ class Menu:
         a.start()
         del a
         self.show_all_menu()
+
+    def save_server(self, num, name):
+        try:
+            data = self.game.server_save_data()
+            self.network.update_game_save(num, data[0], data[1], data[2], name)
+        except Exception:
+            pass
+
+    def load_server(self, num):
+        try:
+            data = self.network.get_game_save(num)
+            self.game.server_load(data[0], data[1], data[2])
+        except Exception:
+            pass
+
