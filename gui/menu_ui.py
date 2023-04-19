@@ -327,9 +327,12 @@ class Menu:
             pass
 
     def start_game(self):
-        a = windows_control.Start(self.network, self.music, self.game, self)
+        a = windows_control.Start(self.network, self.music, self.game, self, self.background, self.window_surface,
+                                  self.manager)
         self.hide_all_menu()
         a.start()
+        a.hide_all()
+        a.navigation.hide_all_navigation()
         del a
         self.show_all_menu()
 
@@ -346,4 +349,3 @@ class Menu:
             self.game.server_load(data[0], data[1], data[2])
         except Exception:
             pass
-

@@ -1,4 +1,3 @@
-import datetime
 import os
 
 import pygame
@@ -25,7 +24,7 @@ def insert_into_playlist(pl, music_file):
 
 
 class Start:
-    def __init__(self, net, music, game, menu):
+    def __init__(self, net, music, game, menu, background, surface, manager):
         pygame.init()
         self.network = net
         self.music = music
@@ -34,15 +33,11 @@ class Start:
 
         self.is_running = True
 
-        self.window_surface = pygame.display.set_mode((800, 600))
-        self.background = pygame.Surface((800, 600))
+        self.window_surface = surface
+        self.background = background
         self.background.fill(pygame.Color(43, 43, 43))
-        pygame.display.set_caption("Build on field")
-        self.manager = pygame_gui.UIManager(pygame.display.get_window_size(), 'resources/theme.json')
-        icon = pygame.image.load(os.path.abspath(os.curdir) + '/resources/img/f5.png')
-        pygame.display.set_icon(icon)
+        self.manager = manager
 
-        self.game.screen = self.background
         self.town = town_ui.Town(self.manager, self.background, self.game)
         self.army = army_ui.Army(self.manager, self.background, self.game)
         self.journal = journal_ui.Journal(self.manager, self.background)
