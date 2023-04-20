@@ -1,11 +1,9 @@
 import datetime
-import time
 from os.path import isdir, join
 from os import listdir
 import pygame
 import pygame_gui
 
-import gamelogic.config
 from gui import navigation_bar
 
 
@@ -99,30 +97,37 @@ class Save:
                     i.enable()
             if self.local_save_1.pressed:
                 self.game.local_load(self.local_save_1.text)
+                self.hide_all_save()
                 self.back_btn.pressed_event = True
                 self.menu.start_game()
             elif self.local_save_2.pressed:
                 self.game.local_load(self.local_save_2.text)
+                self.hide_all_save()
                 self.back_btn.pressed_event = True
                 self.menu.start_game()
             elif self.local_save_3.pressed:
                 self.game.local_load(self.local_save_3.text)
+                self.hide_all_save()
                 self.back_btn.pressed_event = True
                 self.menu.start_game()
             elif self.cloud_save_1.pressed:
                 self.menu.load_server(1)
+                self.hide_all_save()
                 self.back_btn.pressed_event = True
                 self.menu.start_game()
             elif self.cloud_save_2.pressed:
                 self.menu.load_server(2)
+                self.hide_all_save()
                 self.back_btn.pressed_event = True
                 self.menu.start_game()
             elif self.cloud_save_3.pressed:
                 self.menu.load_server(3)
+                self.hide_all_save()
                 self.back_btn.pressed_event = True
                 self.menu.start_game()
             elif self.autosave.pressed:
                 self.game.local_load(self.autosave.text)
+                self.hide_all_save()
                 self.back_btn.pressed_event = True
                 self.menu.start_game()
         else:  # save
@@ -138,6 +143,20 @@ class Save:
                 self.menu.save_server(2, 'save_2' + str(datetime.datetime.now().strftime("%Y-%m-%d %Hh %Mm")))
             elif self.cloud_save_3.pressed:
                 self.menu.save_server(3, 'save_3' + str(datetime.datetime.now().strftime("%Y-%m-%d %Hh %Mm")))
+
+        if not self.menu.server_is_available:
+            self.cloud_save_1.disable()
+            self.cloud_save_2.disable()
+            self.cloud_save_3.disable()
+
+        navigation_bar.draw_text_left(self.background, 'Server', 15, 715, 530)
+        if self.menu.server_is_available:
+            pygame.draw.circle(self.background, (74, 232, 16),
+                               (765, 540), 5)
+        else:
+
+            pygame.draw.circle(self.background, (232, 17, 35),
+                               (765, 540), 5)
 
     def hide_all_save(self):
         self.background.fill(pygame.Color(43, 43, 43))

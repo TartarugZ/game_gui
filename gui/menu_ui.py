@@ -185,7 +185,11 @@ class Menu:
                 self.forgot_send = True
 
             if self.update_connection.pressed:
+                self.hide_all_menu()
+                navigation_bar.draw_text(self.background, "Loading...", 40, 400, 280)
+
                 self.check_server()
+                self.show_all_menu()
 
             if self.text_needed:
                 navigation_bar.draw_text(self.background, "Welcome to the <BUILD ON FIELD>", 40, 400, 30)
