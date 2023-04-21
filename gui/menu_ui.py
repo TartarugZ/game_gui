@@ -187,21 +187,20 @@ class Menu:
             if self.update_connection.pressed:
                 self.hide_all_menu()
                 navigation_bar.draw_text(self.background, "Loading...", 40, 400, 280)
-
+                self.window_surface.blit(self.background, (0, 0))
+                pygame.display.update()
                 self.check_server()
                 self.show_all_menu()
 
-            if self.text_needed:
-                navigation_bar.draw_text(self.background, "Welcome to the <BUILD ON FIELD>", 40, 400, 30)
-                navigation_bar.draw_text(self.background, f'{self.username}', 20, 450, 565)
-                navigation_bar.draw_text_left(self.background, 'Server', 15, 715, 530)
-                if self.server_is_available:
-                    pygame.draw.circle(self.background, (74, 232, 16),
-                                       (765, 540), 5)
-                else:
-
-                    pygame.draw.circle(self.background, (232, 17, 35),
-                                       (765, 540), 5)
+            navigation_bar.draw_text(self.background, "Welcome to the <BUILD ON FIELD>", 40, 400, 30)
+            navigation_bar.draw_text(self.background, f'{self.username}', 20, 450, 565)
+            navigation_bar.draw_text_left(self.background, 'Server', 15, 715, 530)
+            if self.server_is_available:
+                pygame.draw.circle(self.background, (74, 232, 16),
+                                   (765, 540), 5)
+            else:
+                pygame.draw.circle(self.background, (232, 17, 35),
+                                   (765, 540), 5)
 
             for event in pygame.event.get():
                 self.music.music_playlist(event=event)
@@ -237,6 +236,7 @@ class Menu:
             if self.save.back_btn.pressed:
                 self.show_saves = False
                 self.save.hide_all_save()
+                print("Back btn pressed save")
                 self.show_all_menu()
             if self.show_settings:
                 self.settings.start()
@@ -396,6 +396,7 @@ class Menu:
             try:
                 data = self.network.get_game_save(num)
                 self.game.server_load(data[0], data[1], data[2])
+                self.server_is_available = True
             except Exception:
                 self.server_is_available = False
 

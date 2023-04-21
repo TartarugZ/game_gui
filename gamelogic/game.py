@@ -73,12 +73,12 @@ class Game:
         self.new()
         for res in save_resources:
             self.resources[res][COUNT] = save_resources[res]
-            
+
         for house in save_houses:
             x = house[X]
             y = house[Y]
             building = BUILDINGS[house[NAME]]
-            
+
             if building[TYPE] == DYNAMIC:
                 worker = house['workers']
                 tick = house['tick']
@@ -94,7 +94,7 @@ class Game:
         for arm in save_army:
             self.army[arm][COUNT] = save_army[arm][COUNT]
             self.army[arm][ORDER] = save_army[arm][ORDER]            
-            
+
     
     # def server_load(self, army, resources, houses):
     #     self.new()

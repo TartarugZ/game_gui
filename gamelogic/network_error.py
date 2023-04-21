@@ -62,9 +62,17 @@ class WrongEnterError(Exception):
         return f'Wrong input :( Please, check and try again'
 
 
+class DataBaseError(Exception):
+    def __init__(self):
+        pass
+
+    def __str__(self):
+        return f'We ran into problems with the database :( Please make local saves for now'
+
+
 class NeedRefreshToken(Exception):
     def __init__(self):
         pass
-    
+
     def __str__(self):
         return f'Need refresh token'

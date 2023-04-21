@@ -54,9 +54,10 @@ class Save:
     def start(self):
         cooldown = 5000
         now = pygame.time.get_ticks()
-        if now - self.last_tick >= cooldown:
-            self.last_tick = now
-            self.server_saves = self.menu.load_server_saves()
+        if self.menu.username != 'Not logged in':
+            if now - self.last_tick >= cooldown:
+                self.last_tick = now
+                self.server_saves = self.menu.load_server_saves()
         self.background.fill(pygame.Color(43, 43, 43))
         if not self.back:
             self.back_btn.hide()
@@ -64,6 +65,14 @@ class Save:
         if self.text_needed:
             navigation_bar.draw_text(self.background, "Server saves", 30, 270, 50)
             navigation_bar.draw_text(self.background, "Local saves", 30, 530, 50)
+            navigation_bar.draw_text_left(self.background, 'Server', 15, 715, 15)
+            if self.menu.server_is_available:
+                pygame.draw.circle(self.background, (74, 232, 16),
+                                   (765, 25), 5)
+            else:
+
+                pygame.draw.circle(self.background, (232, 17, 35),
+                                   (765, 25), 5)
 
         self.local_saves = [g for g in listdir("save") if isdir(join("save", g)) and 'autosave' not in g]
         if 'save_1' in ''.join(g for g in listdir("save") if isdir(join("save", g)) and 'save_1' in g):
@@ -89,6 +98,12 @@ class Save:
             self.autosave.set_text(a)
         else:
             self.autosave.set_text('No Autosave')
+
+        if self.menu.username == 'Not logged in':
+            self.cloud_save_1.disable()
+            self.cloud_save_2.disable()
+            self.cloud_save_3.disable()
+
         if self.back:  # load
             for i in self.load_but:
                 if i.text == 'Empty':
@@ -98,38 +113,38 @@ class Save:
             if self.local_save_1.pressed:
                 self.game.local_load(self.local_save_1.text)
                 self.hide_all_save()
-                self.back_btn.pressed_event = True
                 self.menu.start_game()
+                self.back_btn.pressed_event = True
             elif self.local_save_2.pressed:
                 self.game.local_load(self.local_save_2.text)
                 self.hide_all_save()
-                self.back_btn.pressed_event = True
                 self.menu.start_game()
+                self.back_btn.pressed_event = True
             elif self.local_save_3.pressed:
                 self.game.local_load(self.local_save_3.text)
                 self.hide_all_save()
-                self.back_btn.pressed_event = True
                 self.menu.start_game()
+                self.back_btn.pressed_event = True
             elif self.cloud_save_1.pressed:
                 self.menu.load_server(1)
                 self.hide_all_save()
-                self.back_btn.pressed_event = True
                 self.menu.start_game()
+                self.back_btn.pressed_event = True
             elif self.cloud_save_2.pressed:
                 self.menu.load_server(2)
                 self.hide_all_save()
-                self.back_btn.pressed_event = True
                 self.menu.start_game()
+                self.back_btn.pressed_event = True
             elif self.cloud_save_3.pressed:
                 self.menu.load_server(3)
                 self.hide_all_save()
-                self.back_btn.pressed_event = True
                 self.menu.start_game()
+                self.back_btn.pressed_event = True
             elif self.autosave.pressed:
                 self.game.local_load(self.autosave.text)
                 self.hide_all_save()
-                self.back_btn.pressed_event = True
                 self.menu.start_game()
+                self.back_btn.pressed_event = True
         else:  # save
             if self.local_save_1.pressed:
                 self.game.local_save('save_1')
@@ -148,15 +163,6 @@ class Save:
             self.cloud_save_1.disable()
             self.cloud_save_2.disable()
             self.cloud_save_3.disable()
-
-        navigation_bar.draw_text_left(self.background, 'Server', 15, 715, 530)
-        if self.menu.server_is_available:
-            pygame.draw.circle(self.background, (74, 232, 16),
-                               (765, 540), 5)
-        else:
-
-            pygame.draw.circle(self.background, (232, 17, 35),
-                               (765, 540), 5)
 
     def hide_all_save(self):
         self.background.fill(pygame.Color(43, 43, 43))

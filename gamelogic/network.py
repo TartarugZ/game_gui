@@ -1,3 +1,5 @@
+import logging
+
 import requests
 
 from gamelogic.network_error import *
@@ -10,13 +12,13 @@ class Network:
     refresh_token = None
 
     def ping_server(self):
-        response = self.session.get(url=f'{self.URL}')
+        self.session.get(url=f'{self.URL}', timeout=5)
 
     def update_tokens(self, callback, **args):
         try:
             self.session.headers.update(
                 {'Authorization': f'Bearer {self.refresh_token}'})
-            response = self.session.get(f'{self.URL}/refresh')
+            response = self.session.get(f'{self.URL}/refresh', timeout=7)
 
             response = response.json()
             self.access_token = response.get('access_token')
@@ -36,7 +38,7 @@ class Network:
             "password": password
         }
         response = self.session.post(
-            url=f'{self.URL}/register', json=body)
+            url=f'{self.URL}/register', json=body, timeout=7)
         if response.status_code == 409:
             raise RegistrationError(email)
         elif response.status_code == 503:
@@ -51,14 +53,17 @@ class Network:
             'username': email,
             'password': password
         }
-        response = self.session.post(url=f'{self.URL}/login', data=data)
+        response = self.session.post(url=f'{self.URL}/login', data=data, timeout=7)
         if response.status_code == requests.codes.not_found:
             raise AuthError
 
         if response.status_code == 404:
             raise AuthError
-        if response.status_code == 422:
+        elif response.status_code == 422:
             raise WrongEnterError
+        elif response.status_code == 503:
+            raise WrongEnterError
+
         response = response.json()
         self.access_token = response.get('access_token')
         self.refresh_token = response.get('refresh_token')
@@ -71,7 +76,7 @@ class Network:
         }
         try:
             response = self.session.post(
-                url=f'{self.URL}/confirm', params=data)
+                url=f'{self.URL}/confirm', params=data, timeout=7)
             if response.status_code == 406:
                 raise WrongCodeError
             elif response.status_code == 401:
@@ -86,7 +91,7 @@ class Network:
             'email': email
         }
         response = self.session.post(
-            url=f'{self.URL}/codereset', json=body)
+            url=f'{self.URL}/codereset', json=body, timeout=7)
         if response.status_code == 404:
             raise NotEmailError
 
@@ -96,7 +101,7 @@ class Network:
             'password': password,
             'code': code
         }
-        response = self.session.post(url=f'{self.URL}/reset', json=body)
+        response = self.session.post(url=f'{self.URL}/reset', json=body, timeout=7)
         if response.status_code == 404:
             raise NotEmailError
         elif response.status_code == 406:
@@ -106,20 +111,21 @@ class Network:
 
     def get_game_save(self, game_id):
         try:
-            response = self.session.get(url=f'{self.URL}/game/{game_id}')
-
-            if response.status_code == 426:
-                raise NeedRefreshToken
-
-            response = response.json()
-            army = response.get('army')
-            resources = response.get('resources')
-            houses = response.get('houses')
-
-            return army, resources, houses
+            with requests.get(url=f'{self.URL}/game/{game_id}', stream=True,
+                              headers={'Authorization': f'Bearer {self.access_token}'}, timeout=7) as r:
+                if r.status_code == 426:
+                    raise NeedRefreshToken
+                response = r.json()
+                army = response.get('army')
+                resources = response.get('resources')
+                houses = response.get('houses')
+                return army, resources, houses
 
         except NeedRefreshToken:
+            logging.info('refresh token')
             return self.update_tokens(self.get_game_save, game_id=game_id)
+        except Exception as e:
+            print(e)
 
     def update_game_save(self, game_id, army, resources, houses, game_name):
         body = {
@@ -130,7 +136,7 @@ class Network:
         }
         try:
             response = self.session.put(
-                url=f'{self.URL}/game/{game_id}', json=body)
+                url=f'{self.URL}/game/{game_id}', json=body, timeout=7)
             if response.status_code == 426:
                 raise NeedRefreshToken
         except NeedRefreshToken:
@@ -139,7 +145,7 @@ class Network:
 
     def get_all_game_info(self):
         try:
-            response = self.session.get(url=f'{self.URL}/game')
+            response = self.session.get(url=f'{self.URL}/game', timeout=7)
             if response.status_code == 426:
                 raise NeedRefreshToken
             return response.json()

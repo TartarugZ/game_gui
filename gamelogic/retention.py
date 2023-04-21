@@ -27,7 +27,7 @@ class Retention:
 
     def save(self, game, dir_name):
         if 'autosave' in dir_name:
-            saves = ['save' + g for g in listdir("save") if isdir(join("save", g)) and 'autosave' in g]
+            saves = [g for g in listdir("save") if isdir(join("save", g)) and 'autosave' in g]
             for i in saves:
                 shutil.rmtree(f'save/{i}')
         
