@@ -434,5 +434,6 @@ class Menu:
     def check_server(self):
         try:
             self.network.ping_server()
+            self.server_is_available = True
         except Exception:
             self.server_is_available = False
